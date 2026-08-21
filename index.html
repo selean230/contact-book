@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>班級電子聯絡本</title>
+    <title>612電子聯絡簿</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -18,47 +18,24 @@
         }
 
         .top-bar {
-            width: 100%;
-            max-width: 1050px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            width: 100%; max-width: 1050px;
+            display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 12px;
         }
         .class-title {
-            font-size: 22px;
-            font-weight: bold;
-            color: #333;
-            outline: none;
-            padding: 2px 6px;
-            border-radius: 4px;
+            font-size: 22px; font-weight: bold; color: #333;
+            outline: none; padding: 2px 6px; border-radius: 4px;
         }
-        body.teacher-mode .class-title {
-            border: 1px dashed #2196F3;
-            background: #e3f2fd;
-        }
+        body.teacher-mode .class-title { border: 1px dashed #2196F3; background: #e3f2fd; }
         .auth-btn {
-            background: #ffffff;
-            border: 1px solid #ccc;
-            padding: 6px 14px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            color: #555;
+            background: #ffffff; border: 1px solid #ccc; padding: 6px 14px;
+            border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: bold; color: #555;
         }
         .auth-btn.is-teacher { background: #4caf50; color: white; border-color: #4caf50; }
 
-        /* 老師控制台 */
         .teacher-panel {
-            display: none;
-            width: 100%;
-            max-width: 1050px;
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: none; width: 100%; max-width: 1050px; background: white;
+            padding: 20px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         body.teacher-mode .teacher-panel { display: block; }
 
@@ -67,84 +44,49 @@
         .panel-group label { font-weight: bold; display: block; margin-bottom: 6px; font-size: 14px; color: #333; }
         
         select, input[type="text"], input[type="password"], textarea {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 14px;
+            width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px;
         }
 
-        /* 常用詞彙膠囊 */
+        /* 常用詞彙膠囊含刪除鍵 */
         .phrase-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-bottom: 8px;
-            background: #f8f9fa;
-            padding: 8px;
-            border-radius: 6px;
-            border: 1px solid #e9ecef;
+            display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px;
+            background: #f8f9fa; padding: 8px; border-radius: 6px; border: 1px solid #e9ecef;
         }
-        .phrase-btn {
-            background: #e9ecef;
-            border: 1px solid #ced4da;
-            padding: 3px 8px;
-            border-radius: 15px;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.1s;
+        .phrase-pill {
+            display: inline-flex; align-items: center; background: #e9ecef;
+            border: 1px solid #ced4da; border-radius: 15px; padding: 2px 8px; font-size: 13px;
         }
-        .phrase-btn:hover { background: #dee2e6; transform: scale(1.05); }
-        .add-phrase-box { display: flex; gap: 6px; margin-top: 6px; }
+        .phrase-btn { border: none; background: transparent; cursor: pointer; font-weight: bold; }
+        .phrase-del-btn {
+            border: none; background: transparent; color: #d32f2f; margin-left: 4px;
+            cursor: pointer; font-size: 12px; font-weight: bold;
+        }
+        .phrase-del-btn:hover { color: #9a0007; }
 
         .date-checkboxes { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 5px; max-height: 100px; overflow-y: auto; }
         .date-checkboxes label { background: white; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight:bold; }
-        .date-checkboxes label:hover { background: #f1f5f9; }
 
-        /* 黑板本體 */
+        /* 黑板風格 */
         .blackboard {
-            width: 100%;
-            max-width: 1050px;
-            background-color: #3b281c;
-            padding: 14px;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+            width: 100%; max-width: 1050px; background-color: #3b281c;
+            padding: 14px; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.25); margin-bottom: 20px;
         }
         .board-inner {
-            background-color: #274e3d;
-            border: 2px dashed rgba(255, 255, 255, 0.3);
-            border-radius: 6px;
-            padding: 20px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            min-height: 500px;
+            background-color: #274e3d; border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 6px; padding: 20px; display: grid; grid-template-columns: 1fr 1fr;
+            gap: 20px; min-height: 380px;
         }
 
-        @media (max-width: 768px) {
-            .board-inner { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 768px) { .board-inner { grid-template-columns: 1fr; } }
 
         .card {
-            border: 2.5px solid #f9f6e7;
-            border-radius: 10px;
-            padding: 18px;
-            color: #ffffff;
-            font-size: 20px;
-            line-height: 1.8;
-            background: rgba(0, 0, 0, 0.08);
-            margin-bottom: 15px;
+            border: 2.5px solid #f9f6e7; border-radius: 10px; padding: 18px;
+            color: #ffffff; font-size: 20px; line-height: 1.8; background: rgba(0, 0, 0, 0.08); margin-bottom: 15px;
         }
         .card-header {
-            font-size: 22px;
-            font-weight: bold;
-            color: #ffe066;
-            margin-bottom: 12px;
-            border-bottom: 1px dashed rgba(255,255,255,0.2);
-            padding-bottom: 8px;
-            outline: none;
+            font-size: 22px; font-weight: bold; color: #ffe066; margin-bottom: 12px;
+            border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 8px; outline: none;
         }
-        body.teacher-mode .card-header { border-bottom: 1px dashed #2196F3; }
 
         yellow { color: #ffe066; font-weight: bold; }
         blue { color: #80e5ff; font-weight: bold; }
@@ -154,51 +96,44 @@
         .color-dot { width: 18px; height: 18px; border-radius: 50%; cursor: pointer; border: 1px solid #999; display: inline-block; }
 
         .btn-save {
-            padding: 8px 14px;
-            background: #2e7d32;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
+            padding: 8px 14px; background: #2e7d32; color: white;
+            border: none; border-radius: 6px; font-weight: bold; cursor: pointer;
         }
         .btn-save:hover { background: #1b5e20; }
 
-        /* 安全密碼 Modal */
+        .edit-section { background: #e3f2fd; padding: 15px; border-radius: 8px; border: 1px solid #bbdefb; margin-bottom: 20px; }
+        .publish-section { background: #f1f8e9; padding: 15px; border-radius: 8px; border: 1px solid #c8e6c9; margin-bottom: 15px; }
+
+        .section-title { font-size: 16px; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+
         .modal-overlay {
             position: fixed; top:0; left:0; width:100vw; height:100vh;
             background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 999;
         }
-        .modal-card {
-            background: white; padding: 20px; border-radius: 10px; width: 320px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
+        .modal-card { background: white; padding: 20px; border-radius: 10px; width: 320px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .pwd-input-wrapper { position: relative; margin: 15px 0; }
         .toggle-pwd-btn { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #666; }
-
-        /* 區塊分隔樣式 */
-        .edit-section { background: #e3f2fd; padding: 15px; border-radius: 8px; border: 1px solid #bbdefb; margin-bottom: 20px; }
-        .publish-section { background: #f1f8e9; padding: 15px; border-radius: 8px; border: 1px solid #c8e6c9; margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
     <div class="top-bar">
-        <div id="classTitle" class="class-title" contenteditable="false" onblur="saveClassTitle()">三上電子聯絡本</div>
+        <div id="classTitle" class="class-title" contenteditable="false" onblur="saveClassTitle()">612電子聯絡簿</div>
         <button id="authBtn" class="auth-btn" onclick="handleAuth()"><i class="fa-solid fa-lock"></i> 老師登入</button>
     </div>
 
-    <!-- 老師後台 -->
+    <!-- 老師控制台 -->
     <div class="teacher-panel">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <h3 style="color:#2d5a4c;"><i class="fa-solid fa-sliders"></i> 老師編輯控制台</h3>
+            <h3 style="color:#2d5a4c;"><i class="fa-solid fa-sliders"></i> 612 老師編輯後台</h3>
             <button onclick="openChangePwdModal()" style="background:#e0a800; color:white; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-size:13px; font-weight:bold;">
-                🔑 修改登入密碼
+                🔑 修改密碼
             </button>
         </div>
         
-        <!-- ✍️ 第一區：編輯區 -->
+        <!-- ✍️ 編輯區 -->
         <div class="edit-section">
-            <h4 style="color:#1565c0; margin-bottom:12px;"><i class="fa-solid fa-pen"></i> 第一步：選擇要「編輯」的日期與內容</h4>
+            <div class="section-title" style="color:#1565c0;"><i class="fa-solid fa-pen-to-square"></i> 第一步：選取日期並編輯文字（下方會呈現當下即時畫面）</div>
             <div class="panel-row">
                 <div class="panel-group">
                     <label>選擇月份：</label>
@@ -211,11 +146,11 @@
             </div>
 
             <div class="panel-group" style="margin-bottom:12px;">
-                <label>⚡ 快速插入常用詞彙：</label>
+                <label>⚡ 常用詞彙（點擊插入，點擊「x」可直接刪除常用詞）：</label>
                 <div id="phraseList" class="phrase-container"></div>
-                <div class="add-phrase-box">
+                <div style="display:flex; gap:6px; margin-top:6px;">
                     <input type="text" id="newPhraseInput" placeholder="新增自訂常用詞" style="width: 200px;">
-                    <button onclick="addCustomPhrase()" style="padding:4px 10px; background:#4b5563; color:white; border:none; border-radius:4px; cursor:pointer;">+ 新增</button>
+                    <button onclick="addCustomPhrase()" style="padding:4px 10px; background:#4b5563; color:white; border:none; border-radius:4px; cursor:pointer;">+ 新增常用詞</button>
                 </div>
             </div>
 
@@ -228,8 +163,8 @@
                             <span class="color-dot" style="background:#ff9ebb;" onclick="addTag('leftText','pink')"></span>
                         </span>
                     </label>
-                    <textarea id="leftText" rows="6" oninput="onLiveEdit()"></textarea>
-                    <button class="btn-save" style="margin-top:5px; width:100%;" onclick="saveSingleSide('left')">💾 儲存左欄內容</button>
+                    <textarea id="leftText" rows="5" oninput="onLiveEdit()"></textarea>
+                    <button class="btn-save" style="margin-top:5px; width:100%;" onclick="saveSingleSide('left')">💾 儲存該日左欄至雲端</button>
                 </div>
                 <div class="panel-group">
                     <label>右欄內容 (聯絡簿作業)：
@@ -239,33 +174,47 @@
                             <span class="color-dot" style="background:#ff9ebb;" onclick="addTag('rightText','pink')"></span>
                         </span>
                     </label>
-                    <textarea id="rightText" rows="6" oninput="onLiveEdit()"></textarea>
-                    <button class="btn-save" style="margin-top:5px; width:100%;" onclick="saveSingleSide('right')">💾 儲存右欄內容</button>
+                    <textarea id="rightText" rows="5" oninput="onLiveEdit()"></textarea>
+                    <button class="btn-save" style="margin-top:5px; width:100%;" onclick="saveSingleSide('right')">💾 儲存該日右欄至雲端</button>
                 </div>
             </div>
         </div>
 
-        <!-- 📢 第二區：發布區 -->
+        <!-- 📢 發布區 -->
         <div class="publish-section">
-            <h4 style="color:#2e7d32; margin-bottom:12px;"><i class="fa-solid fa-bullhorn"></i> 第二步：選擇要「發布呈現」給家長的日期</h4>
+            <div class="section-title" style="color:#2e7d32;"><i class="fa-solid fa-bullhorn"></i> 第二步：選擇發布給家長與學生說明的日期</div>
             <div class="panel-row">
                 <div class="panel-group">
-                    <label style="color:#d32f2f;">【左欄 - 當日任務】呈現哪一天？(下拉選擇)</label>
+                    <label style="color:#d32f2f;">【左欄 - 當日任務】呈現哪一天？</label>
                     <select id="leftPublishSelect" onchange="setLeftDate(this.value)" style="border: 2px solid #4caf50; background: #fff; font-weight:bold;"></select>
                 </div>
                 <div class="panel-group">
-                    <label style="color:#d32f2f;">【右欄 - 聯絡簿】呈現哪幾天？(打勾多選)</label>
+                    <label style="color:#d32f2f;">【右欄 - 聯絡簿】呈現哪幾天？(多選)</label>
                     <div id="rightDateCheckboxGroup" class="date-checkboxes"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 檢視畫面 -->
-    <div class="blackboard">
-        <div class="board-inner">
-            <div id="leftContainer"></div>
-            <div id="rightContainer"></div>
+    <!-- 🔍 中間：老師當下打字「即時預覽黑板」 (僅登入時顯示) -->
+    <div id="previewSection" style="width:100%; max-width:1050px; display:none; margin-bottom:20px;">
+        <div style="font-weight:bold; color:#1565c0; margin-bottom:6px;"><i class="fa-solid fa-eye"></i> 🔍 老師當下編輯日期之【即時畫面預覽】：</div>
+        <div class="blackboard" style="box-shadow:none; border:2px dashed #2196F3;">
+            <div class="board-inner">
+                <div id="liveLeftContainer"></div>
+                <div id="liveRightContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📢 最下方：家長與學生看得到的「公開發布黑板」 -->
+    <div style="width:100%; max-width:1050px;">
+        <div style="font-weight:bold; color:#2e7d32; margin-bottom:6px;"><i class="fa-solid fa-users"></i> 📢 家長與學生開啟網址看到的【最終發布黑板】：</div>
+        <div class="blackboard">
+            <div class="board-inner">
+                <div id="publicLeftContainer"></div>
+                <div id="publicRightContainer"></div>
+            </div>
         </div>
     </div>
 
@@ -300,41 +249,161 @@
     </div>
 
     <script>
+        const GAS_API_URL = "https://script.google.com/macros/s/AKfycbzuZkJ6KnbOIWunJJ3CZkx_g5zZDG4XweaxwduuSksCKVZL1V0OGnKTdOukf2X4Tx7B/exec";
+
         let isTeacher = false;
         let activeTargetTextarea = 'leftText';
-        let teacherPassword = localStorage.getItem('teacher_pwd') || "1234";
-
-        let phrases = JSON.parse(localStorage.getItem('custom_phrases')) || [
-            "□", "△", "☆", "甲本", "乙本", "聯絡簿", "國卷", "數卷", "國習", "國考訂簽", "數考訂簽", "數習", "數練", "短文", "語詞", "P.~P."
-        ];
-
-        let db = JSON.parse(localStorage.getItem('contact_book_db_v5')) || {
-            classTitle: "三上電子聯絡本",
-            activeLeftDate: "115-08-31",
-            activeRightDates: ["115-08-31"],
-            leftHeaders: {},
-            rightHeaders: {},
-            data: {
-                "115-08-30": {
-                    left: "<yellow>8/30 孩子早：</yellow>\n1. 交△數習、生乙。\n2. 抄<yellow>兩日</yellow>聯絡本。",
-                    right: "<yellow>8/30(一)</yellow>\n□ 1. 生乙 P.7~P.8。\n□ 2. 數重 P.8~P.9。"
-                },
-                "115-08-31": {
-                    left: "<yellow>8/31 孩子早：</yellow>\n1. 交國習、數重。\n2. 訂正數測卷。",
-                    right: "<yellow>8/31(二)</yellow>\n□ 1. 國L2短文。\n□ 2. 數習 P.18~P.19。"
-                }
-            }
-        };
+        let db = { classTitle: "612電子聯絡簿", password: "1234", activeLeftDate: "", activeRightDates: [], phrases: [], entries: {} };
 
         window.onload = function() {
-            document.getElementById('classTitle').innerText = db.classTitle || "三上電子聯絡本";
             initMonthSelect();
-            renderPhrases();
-            renderBoard();
+            fetchCloudData();
 
             document.getElementById('leftText').addEventListener('focus', () => activeTargetTextarea = 'leftText');
             document.getElementById('rightText').addEventListener('focus', () => activeTargetTextarea = 'rightText');
         };
+
+        async function fetchCloudData() {
+            try {
+                const res = await fetch(GAS_API_URL);
+                const data = await res.json();
+                db = data;
+                document.getElementById('classTitle').innerText = db.classTitle || "612電子聯絡簿";
+                renderPhrases();
+                renderTeacherPublishBoxes();
+                renderPublicBoard();
+                renderLivePreview();
+            } catch(e) {
+                console.log("網路異常或試算表讀取中");
+            }
+        }
+
+        function renderPhrases() {
+            const box = document.getElementById('phraseList');
+            box.innerHTML = '';
+            (db.phrases || []).forEach((p, idx) => {
+                box.innerHTML += `
+                    <div class="phrase-pill">
+                        <button class="phrase-btn" onclick="insertPhrase('${p}')">${p}</button>
+                        <button class="phrase-del-btn" onclick="deletePhrase(${idx})" title="刪除此詞彙">✕</button>
+                    </div>`;
+            });
+        }
+
+        function insertPhrase(text) {
+            const area = document.getElementById(activeTargetTextarea);
+            const start = area.selectionStart;
+            const end = area.selectionEnd;
+            area.value = area.value.substring(0, start) + text + area.value.substring(end);
+            area.focus();
+            area.selectionStart = area.selectionEnd = start + text.length;
+            onLiveEdit();
+        }
+
+        function addCustomPhrase() {
+            const val = document.getElementById('newPhraseInput').value.trim();
+            if(val) {
+                if(!db.phrases) db.phrases = [];
+                db.phrases.push(val);
+                renderPhrases();
+                document.getElementById('newPhraseInput').value = '';
+                syncSettingsToCloud({ phrases: db.phrases });
+            }
+        }
+
+        function deletePhrase(idx) {
+            db.phrases.splice(idx, 1);
+            renderPhrases();
+            syncSettingsToCloud({ phrases: db.phrases });
+        }
+
+        function onLiveEdit() {
+            const curDate = document.getElementById('daySelect').value;
+            if(!db.entries[curDate]) db.entries[curDate] = { left: '', right: '' };
+            db.entries[curDate].left = document.getElementById('leftText').value;
+            db.entries[curDate].right = document.getElementById('rightText').value;
+            renderLivePreview();
+        }
+
+        function renderLivePreview() {
+            if(!isTeacher) return;
+            const curDate = document.getElementById('daySelect').value;
+            const entry = db.entries[curDate] || { left: '', right: '' };
+
+            document.getElementById('liveLeftContainer').innerHTML = `
+                <div class="card">
+                    <div class="card-header">☀️ 今日任務 (${curDate})</div>
+                    <div>${formatText(entry.left)}</div>
+                </div>`;
+
+            document.getElementById('liveRightContainer').innerHTML = `
+                <div class="card">
+                    <div class="card-header">📝 聯絡簿作業 (${curDate})</div>
+                    <div>${formatText(entry.right)}</div>
+                </div>`;
+        }
+
+        function renderPublicBoard() {
+            const leftBox = document.getElementById('publicLeftContainer');
+            const leftDate = db.activeLeftDate;
+            const leftEntry = db.entries[leftDate] || { left: '' };
+            const leftTitle = db.leftHeaders && db.leftHeaders[leftDate] ? db.leftHeaders[leftDate] : `☀️ 今日任務 (${leftDate || '未發布'})`;
+
+            leftBox.innerHTML = `
+                <div class="card">
+                    <div class="card-header">${leftTitle}</div>
+                    <div>${formatText(leftEntry.left)}</div>
+                </div>`;
+
+            const rightBox = document.getElementById('publicRightContainer');
+            rightBox.innerHTML = '';
+            (db.activeRightDates || []).forEach(d => {
+                const rightEntry = db.entries[d] || { right: '' };
+                const rightTitle = db.rightHeaders && db.rightHeaders[d] ? db.rightHeaders[d] : `📝 聯絡簿作業 (${d})`;
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="card-header">${rightTitle}</div>
+                    <div>${formatText(rightEntry.right)}</div>`;
+                rightBox.appendChild(card);
+            });
+        }
+
+        async function saveSingleSide(side) {
+            const curDate = document.getElementById('daySelect').value;
+            if(!db.entries[curDate]) db.entries[curDate] = { left: '', right: '' };
+            
+            const payload = {
+                entry: {
+                    date: curDate,
+                    left: document.getElementById('leftText').value,
+                    right: document.getElementById('rightText').value
+                }
+            };
+
+            await fetch(GAS_API_URL, { method: 'POST', body: JSON.stringify(payload) });
+            alert(`已成功儲存 ${curDate} 【${side === 'left' ? '左欄' : '右欄'}】內容至雲端！`);
+            renderTeacherPublishBoxes();
+            renderPublicBoard();
+        }
+
+        async function syncSettingsToCloud(settingsPayload) {
+            await fetch(GAS_API_URL, { method: 'POST', body: JSON.stringify({ settings: settingsPayload }) });
+        }
+
+        function setLeftDate(d) {
+            db.activeLeftDate = d;
+            syncSettingsToCloud({ activeLeftDate: d });
+            renderPublicBoard();
+        }
+
+        function toggleRightDate(d, checked) {
+            if(!db.activeRightDates) db.activeRightDates = [];
+            if(checked) { if(!db.activeRightDates.includes(d)) db.activeRightDates.push(d); }
+            else { db.activeRightDates = db.activeRightDates.filter(x => x !== d); }
+            syncSettingsToCloud({ activeRightDates: db.activeRightDates });
+            renderPublicBoard();
+        }
 
         function handleAuth() {
             if (!isTeacher) {
@@ -345,48 +414,40 @@
                 document.body.classList.remove('teacher-mode');
                 document.getElementById('authBtn').innerHTML = `<i class="fa-solid fa-lock"></i> 老師登入`;
                 document.getElementById('authBtn').classList.remove('is-teacher');
-                document.getElementById('classTitle').contentEditable = "false";
+                document.getElementById('previewSection').style.display = 'none';
             }
         }
 
         function submitLogin() {
             const input = document.getElementById('inputPassword').value;
-            if (input === teacherPassword) {
+            if (input === (db.password || "1234")) {
                 isTeacher = true;
                 document.body.classList.add('teacher-mode');
                 document.getElementById('authBtn').innerHTML = `<i class="fa-solid fa-unlock"></i> 退出管理`;
                 document.getElementById('authBtn').classList.add('is-teacher');
-                document.getElementById('classTitle').contentEditable = "true";
+                document.getElementById('previewSection').style.display = 'block';
                 closeModal('loginModal');
                 renderTeacherPublishBoxes();
-            } else {
-                alert("密碼錯誤！");
-            }
+                renderLivePreview();
+            } else { alert("密碼錯誤！"); }
         }
 
-        function openChangePwdModal() {
-            document.getElementById('newPassword').value = '';
-            document.getElementById('changePwdModal').style.display = 'flex';
-        }
-
+        function openChangePwdModal() { document.getElementById('changePwdModal').style.display = 'flex'; }
         function submitChangePassword() {
             const newPwd = document.getElementById('newPassword').value.trim();
             if (newPwd) {
-                teacherPassword = newPwd;
-                localStorage.setItem('teacher_pwd', newPwd);
+                db.password = newPwd;
+                syncSettingsToCloud({ password: newPwd });
                 closeModal('changePwdModal');
                 alert("密碼修改成功！");
-            } else { alert("密碼不可為空！"); }
+            }
         }
 
         function togglePasswordVisibility(inputId, eyeId) {
             const input = document.getElementById(inputId);
             const eye = document.getElementById(eyeId);
-            if (input.type === "password") {
-                input.type = "text"; eye.classList.remove("fa-eye"); eye.classList.add("fa-eye-slash");
-            } else {
-                input.type = "password"; eye.classList.remove("fa-eye-slash"); eye.classList.add("fa-eye");
-            }
+            if (input.type === "password") { input.type = "text"; eye.classList.remove("fa-eye"); eye.classList.add("fa-eye-slash"); }
+            else { input.type = "password"; eye.classList.remove("fa-eye-slash"); eye.classList.add("fa-eye"); }
         }
 
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
@@ -397,8 +458,7 @@
             const months = [
                 { text: "115 年 08 月", val: "115-08" }, { text: "115 年 09 月", val: "115-09" },
                 { text: "115 年 10 月", val: "115-10" }, { text: "115 年 11 月", val: "115-11" },
-                { text: "115 年 12 月", val: "115-12" }, { text: "116 年 01 月", val: "116-01" },
-                { text: "116 年 02 月", val: "116-02" }, { text: "116 年 03 月", val: "116-03" }
+                { text: "115 年 12 月", val: "115-12" }, { text: "116 年 01 月", val: "116-01" }
             ];
             months.forEach(m => monthSelect.innerHTML += `<option value="${m.val}">${m.text}</option>`);
             updateDaySelect();
@@ -418,65 +478,16 @@
 
         function loadDateContent() {
             const curDate = document.getElementById('daySelect').value;
-            const entry = db.data[curDate] || { left: '', right: '' };
+            const entry = db.entries[curDate] || { left: '', right: '' };
             document.getElementById('leftText').value = entry.left || '';
             document.getElementById('rightText').value = entry.right || '';
-        }
-
-        function renderPhrases() {
-            const box = document.getElementById('phraseList');
-            box.innerHTML = '';
-            phrases.forEach(p => box.innerHTML += `<button class="phrase-btn" onclick="insertPhrase('${p}')">${p}</button>`);
-        }
-
-        function insertPhrase(text) {
-            const area = document.getElementById(activeTargetTextarea);
-            const start = area.selectionStart;
-            const end = area.selectionEnd;
-            area.value = area.value.substring(0, start) + text + area.value.substring(end);
-            area.focus();
-            area.selectionStart = area.selectionEnd = start + text.length;
-            onLiveEdit();
-        }
-
-        function addCustomPhrase() {
-            const val = document.getElementById('newPhraseInput').value.trim();
-            if(val) {
-                phrases.push(val);
-                localStorage.setItem('custom_phrases', JSON.stringify(phrases));
-                renderPhrases();
-                document.getElementById('newPhraseInput').value = '';
-            }
-        }
-
-        function onLiveEdit() {
-            const curDate = document.getElementById('daySelect').value;
-            if(!db.data[curDate]) db.data[curDate] = { left: '', right: '' };
-            db.data[curDate].left = document.getElementById('leftText').value;
-            db.data[curDate].right = document.getElementById('rightText').value;
-            saveDb(); // 即時把新建的日期存入，發布選單才抓得到
-            renderTeacherPublishBoxes();
-            renderBoard();
-        }
-
-        function saveSingleSide(side) {
-            const curDate = document.getElementById('daySelect').value;
-            if(!db.data[curDate]) db.data[curDate] = { left: '', right: '' };
-            
-            if(side === 'left') db.data[curDate].left = document.getElementById('leftText').value;
-            else db.data[curDate].right = document.getElementById('rightText').value;
-            
-            saveDb();
-            alert(`已成功儲存 ${curDate} 【${side === 'left' ? '左欄' : '右欄'}內容】！`);
-            renderTeacherPublishBoxes();
-            renderBoard();
+            renderLivePreview();
         }
 
         function renderTeacherPublishBoxes() {
             if (!isTeacher) return;
-            const allDates = Object.keys(db.data).sort();
+            const allDates = Object.keys(db.entries).sort();
             
-            // 左欄改為下拉選單
             const leftSelect = document.getElementById('leftPublishSelect');
             leftSelect.innerHTML = '';
             allDates.forEach(d => {
@@ -484,59 +495,18 @@
                 leftSelect.innerHTML += `<option value="${d}" ${selected}>${d}</option>`;
             });
 
-            // 右欄保持打勾多選
             const rightGroup = document.getElementById('rightDateCheckboxGroup');
             rightGroup.innerHTML = '';
             allDates.forEach(d => {
-                const isChecked = db.activeRightDates.includes(d);
+                const isChecked = (db.activeRightDates || []).includes(d);
                 rightGroup.innerHTML += `<label><input type="checkbox" value="${d}" ${isChecked ? 'checked' : ''} onchange="toggleRightDate('${d}', this.checked)"> ${d}</label>`;
             });
         }
 
-        function setLeftDate(d) { 
-            db.activeLeftDate = d; 
-            saveDb(); 
-            renderBoard(); 
+        function saveClassTitle() {
+            db.classTitle = document.getElementById('classTitle').innerText;
+            syncSettingsToCloud({ classTitle: db.classTitle });
         }
-
-        function toggleRightDate(d, checked) {
-            if(checked) { if(!db.activeRightDates.includes(d)) db.activeRightDates.push(d); }
-            else { db.activeRightDates = db.activeRightDates.filter(x => x !== d); }
-            saveDb(); 
-            renderBoard();
-        }
-
-        function renderBoard() {
-            const leftBox = document.getElementById('leftContainer');
-            const leftDate = db.activeLeftDate;
-            const leftTitle = db.leftHeaders[leftDate] || `☀️ 今日任務 (${leftDate})`;
-            
-            leftBox.innerHTML = `
-                <div class="card">
-                    <div class="card-header" contenteditable="${isTeacher}" onblur="saveHeader('left', '${leftDate}', this.innerText)">${leftTitle}</div>
-                    <div>${formatText(db.data[leftDate] ? db.data[leftDate].left : '')}</div>
-                </div>`;
-
-            const rightBox = document.getElementById('rightContainer');
-            rightBox.innerHTML = '';
-            db.activeRightDates.forEach(d => {
-                const rightTitle = db.rightHeaders[d] || `📝 聯絡簿作業 (${d})`;
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `
-                    <div class="card-header" contenteditable="${isTeacher}" onblur="saveHeader('right', '${d}', this.innerText)">${rightTitle}</div>
-                    <div>${formatText(db.data[d] ? db.data[d].right : '')}</div>`;
-                rightBox.appendChild(card);
-            });
-        }
-
-        function saveHeader(side, dateStr, text) {
-            if(side === 'left') db.leftHeaders[dateStr] = text;
-            else db.rightHeaders[dateStr] = text;
-            saveDb();
-        }
-
-        function saveClassTitle() { db.classTitle = document.getElementById('classTitle').innerText; saveDb(); }
 
         function formatText(str) {
             if (!str) return '<em>(無內容)</em>';
@@ -554,8 +524,6 @@
             area.value = area.value.substring(0, start) + `<${tag}>${txt}</${tag}>` + area.value.substring(end);
             onLiveEdit();
         }
-
-        function saveDb() { localStorage.setItem('contact_book_db_v5', JSON.stringify(db)); }
     </script>
 </body>
 </html>
