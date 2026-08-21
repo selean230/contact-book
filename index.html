@@ -51,7 +51,6 @@
             width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px;
         }
 
-        /* 常用詞彙膠囊含刪除鍵 */
         .phrase-container {
             display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px;
             background: #f8f9fa; padding: 8px; border-radius: 6px; border: 1px solid #e9ecef;
@@ -70,7 +69,6 @@
         .date-checkboxes { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 5px; max-height: 100px; overflow-y: auto; }
         .date-checkboxes label { background: white; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight:bold; }
 
-        /* 黑板風格 */
         .blackboard {
             width: 100%; max-width: 1050px; background-color: #3b281c;
             padding: 14px; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.25); margin-bottom: 20px;
@@ -189,11 +187,11 @@
             <div class="section-title" style="color:#2e7d32;"><i class="fa-solid fa-bullhorn"></i> 第二步：選擇發布給家長與學生說明的日期</div>
             <div class="panel-row">
                 <div class="panel-group">
-                    <label style="color:#d32f2f;">【左欄 - 當日任務】呈現哪一天？</label>
+                    <label style="color:#d32f2f;">【左欄 - 當日任務】選擇要發布的日期：</label>
                     <select id="leftPublishSelect" onchange="setLeftDate(this.value)" style="border: 2px solid #4caf50; background: #fff; font-weight:bold;"></select>
                 </div>
                 <div class="panel-group">
-                    <label style="color:#d32f2f;">【右欄 - 聯絡簿】呈現哪幾天？(多選)</label>
+                    <label style="color:#d32f2f;">【右欄 - 聯絡簿】選擇要發布的日期 (多選)：</label>
                     <div id="rightDateCheckboxGroup" class="date-checkboxes"></div>
                 </div>
             </div>
@@ -369,7 +367,7 @@
             const leftBox = document.getElementById('publicLeftContainer');
             const leftDate = db.activeLeftDate;
             const leftEntry = db.entries[leftDate] || { left: '' };
-            const leftTitle = db.leftHeaders && db.leftHeaders[leftDate] ? db.leftHeaders[leftDate] : `☀️ 今日任務 (${leftDate || '未發布'})`;
+            const leftTitle = `☀️ 今日任務 (${leftDate || '未發布'})`;
 
             leftBox.innerHTML = `
                 <div class="card">
@@ -381,7 +379,7 @@
             rightBox.innerHTML = '';
             (db.activeRightDates || []).forEach(d => {
                 const rightEntry = db.entries[d] || { right: '' };
-                const rightTitle = db.rightHeaders && db.rightHeaders[d] ? db.rightHeaders[d] : `📝 聯絡簿作業 (${d})`;
+                const rightTitle = `📝 聯絡簿作業 (${d})`;
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = `
@@ -391,7 +389,6 @@
             });
         }
 
-        // 解決 CORS 跨域寫入阻擋的核心修復函數
         async function sendToCloud(payload) {
             try {
                 await fetch(GAS_API_URL, {
@@ -401,7 +398,7 @@
                     body: JSON.stringify(payload)
                 });
             } catch(e) {
-                console.log("送出至雲端失敗:", e);
+                console.log("雲端同步失敗:", e);
             }
         }
 
@@ -412,11 +409,17 @@
             db.entries[curDate].left = document.getElementById('leftText').value;
             db.entries[curDate].right = document.getElementById('rightText').value;
 
+            // 預設將新儲存的日期自動加入發布，確保第一次儲存就能看到
+            if (!db.activeLeftDate) db.activeLeftDate = curDate;
+
             const payload = {
                 entry: {
                     date: curDate,
                     left: db.entries[curDate].left,
                     right: db.entries[curDate].right
+                },
+                settings: {
+                    activeLeftDate: db.activeLeftDate
                 }
             };
 
@@ -430,18 +433,20 @@
             await sendToCloud({ settings: settingsPayload });
         }
 
-        function setLeftDate(d) {
+        // 強制左欄選擇即時更新並傳送至雲端
+        async function setLeftDate(d) {
             db.activeLeftDate = d;
-            syncSettingsToCloud({ activeLeftDate: d });
             renderPublicBoard();
+            await syncSettingsToCloud({ activeLeftDate: d });
         }
 
-        function toggleRightDate(d, checked) {
+        // 強制右欄選擇即時更新並傳送至雲端
+        async function toggleRightDate(d, checked) {
             if(!db.activeRightDates) db.activeRightDates = [];
             if(checked) { if(!db.activeRightDates.includes(d)) db.activeRightDates.push(d); }
             else { db.activeRightDates = db.activeRightDates.filter(x => x !== d); }
-            syncSettingsToCloud({ activeRightDates: db.activeRightDates });
             renderPublicBoard();
+            await syncSettingsToCloud({ activeRightDates: db.activeRightDates });
         }
 
         function handleAuth() {
@@ -529,7 +534,7 @@
             const allDates = Object.keys(db.entries).sort();
             
             const leftSelect = document.getElementById('leftPublishSelect');
-            leftSelect.innerHTML = '';
+            leftSelect.innerHTML = '<option value="">-- 請選擇要發布的日期 --</option>';
             allDates.forEach(d => {
                 const selected = db.activeLeftDate === d ? 'selected' : '';
                 leftSelect.innerHTML += `<option value="${d}" ${selected}>${d}</option>`;
