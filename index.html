@@ -6,9 +6,14 @@
     <title>612電子聯絡簿</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
+        :root {
+            --board-font-size: 26px;
+            --board-title-size: 28px;
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+            font-family: "BiauKai", "DFKai-SB", "標楷體", "PingFang TC", "Microsoft JhengHei", sans-serif;
             background-color: #f2f4f5;
             display: flex;
             flex-direction: column;
@@ -23,8 +28,9 @@
             margin-bottom: 12px;
         }
         .class-title {
-            font-size: 22px; font-weight: bold; color: #333;
+            font-size: 26px; font-weight: bold; color: #333;
             outline: none; padding: 2px 6px; border-radius: 4px;
+            font-family: "BiauKai", "DFKai-SB", "標楷體", sans-serif;
         }
         body.teacher-mode .class-title { 
             border: 1px dashed #2196F3; 
@@ -33,22 +39,31 @@
         }
         .auth-btn {
             background: #ffffff; border: 1px solid #ccc; padding: 6px 14px;
-            border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: bold; color: #555;
+            border-radius: 20px; cursor: pointer; font-size: 15px; font-weight: bold; color: #555;
+            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+            display: flex; align-items: center; gap: 6px;
         }
         .auth-btn.is-teacher { background: #4caf50; color: white; border-color: #4caf50; }
 
         .teacher-panel {
             display: none; width: 100%; max-width: 1050px; background: white;
             padding: 20px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
         }
         body.teacher-mode .teacher-panel { display: block; }
 
         .panel-row { display: flex; gap: 15px; margin-bottom: 12px; flex-wrap: wrap; }
         .panel-group { flex: 1; min-width: 240px; }
-        .panel-group label { font-weight: bold; display: block; margin-bottom: 6px; font-size: 14px; color: #333; }
+        .panel-group label { font-weight: bold; display: block; margin-bottom: 6px; font-size: 15px; color: #333; }
         
-        select, input[type="text"], input[type="password"], textarea {
-            width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px;
+        select, input[type="text"], input[type="password"] {
+            width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px;
+            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+        }
+        textarea {
+            width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 20px;
+            font-family: "BiauKai", "DFKai-SB", "標楷體", sans-serif;
+            line-height: 1.6;
         }
 
         .phrase-container {
@@ -57,17 +72,16 @@
         }
         .phrase-pill {
             display: inline-flex; align-items: center; background: #e9ecef;
-            border: 1px solid #ced4da; border-radius: 15px; padding: 2px 8px; font-size: 13px;
+            border: 1px solid #ced4da; border-radius: 15px; padding: 2px 8px; font-size: 15px;
         }
-        .phrase-btn { border: none; background: transparent; cursor: pointer; font-weight: bold; }
+        .phrase-btn { border: none; background: transparent; cursor: pointer; font-weight: bold; font-family: "BiauKai", "DFKai-SB", "標楷體", sans-serif; }
         .phrase-del-btn {
             border: none; background: transparent; color: #d32f2f; margin-left: 4px;
-            cursor: pointer; font-size: 12px; font-weight: bold;
+            cursor: pointer; font-size: 13px; font-weight: bold;
         }
-        .phrase-del-btn:hover { color: #9a0007; }
 
         .date-checkboxes { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 5px; max-height: 100px; overflow-y: auto; }
-        .date-checkboxes label { background: white; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight:bold; }
+        .date-checkboxes label { background: white; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; font-size: 15px; font-weight:bold; }
 
         .blackboard {
             width: 100%; max-width: 1050px; background-color: #3b281c;
@@ -78,16 +92,19 @@
             border-radius: 6px; padding: 20px; display: grid; grid-template-columns: 1fr 1fr;
             gap: 20px; min-height: 380px;
         }
-
         @media (max-width: 768px) { .board-inner { grid-template-columns: 1fr; } }
 
         .card {
             border: 2.5px solid #f9f6e7; border-radius: 10px; padding: 18px;
-            color: #ffffff; font-size: 20px; line-height: 1.8; background: rgba(0, 0, 0, 0.08); margin-bottom: 15px;
+            color: #ffffff; font-size: var(--board-font-size); line-height: 1.8; background: rgba(0, 0, 0, 0.08); margin-bottom: 15px;
+            font-family: "BiauKai", "DFKai-SB", "標楷體", sans-serif;
+            transition: font-size 0.3s ease;
         }
         .card-header {
-            font-size: 22px; font-weight: bold; color: #ffe066; margin-bottom: 12px;
+            font-size: var(--board-title-size); font-weight: bold; color: #ffe066; margin-bottom: 12px;
             border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 8px; outline: none;
+            font-family: "BiauKai", "DFKai-SB", "標楷體", sans-serif;
+            transition: font-size 0.3s ease;
         }
 
         yellow { color: #ffe066; font-weight: bold; }
@@ -95,18 +112,22 @@
         pink { color: #ff9ebb; font-weight: bold; }
         
         .color-palette { display: inline-flex; gap: 6px; margin-left: 10px; }
-        .color-dot { width: 18px; height: 18px; border-radius: 50%; cursor: pointer; border: 1px solid #999; display: inline-block; }
+        .color-dot { width: 20px; height: 20px; border-radius: 50%; cursor: pointer; border: 1px solid #999; display: inline-block; }
 
         .btn-save {
-            padding: 8px 14px; background: #2e7d32; color: white;
-            border: none; border-radius: 6px; font-weight: bold; cursor: pointer;
+            padding: 10px 16px; background: #2e7d32; color: white;
+            border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 16px;
+            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
         }
         .btn-save:hover { background: #1b5e20; }
+        .btn-zoom {
+            background: #ffffff; border: 1px solid #ccc; padding: 4px 10px;
+            border-radius: 4px; cursor: pointer; font-weight: bold; color: #333;
+        }
 
         .edit-section { background: #e3f2fd; padding: 15px; border-radius: 8px; border: 1px solid #bbdefb; margin-bottom: 20px; }
         .publish-section { background: #f1f8e9; padding: 15px; border-radius: 8px; border: 1px solid #c8e6c9; margin-bottom: 15px; }
-
-        .section-title { font-size: 16px; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+        .section-title { font-size: 17px; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
 
         .modal-overlay {
             position: fixed; top:0; left:0; width:100vw; height:100vh;
@@ -128,14 +149,14 @@
     <div class="teacher-panel">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <h3 style="color:#2d5a4c;"><i class="fa-solid fa-sliders"></i> 612 老師編輯後台</h3>
-            <button onclick="openChangePwdModal()" style="background:#e0a800; color:white; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-size:13px; font-weight:bold;">
+            <button onclick="openChangePwdModal()" style="background:#e0a800; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; font-size:14px; font-weight:bold;">
                 🔑 修改密碼
             </button>
         </div>
         
         <!-- ✍️ 編輯區 -->
         <div class="edit-section">
-            <div class="section-title" style="color:#1565c0;"><i class="fa-solid fa-pen-to-square"></i> 第一步：選取日期並編輯文字（下方會呈現當下即時畫面）</div>
+            <div class="section-title" style="color:#1565c0;"><i class="fa-solid fa-pen-to-square"></i> 第一步：選取日期並編輯文字</div>
             <div class="panel-row">
                 <div class="panel-group">
                     <label>選擇月份：</label>
@@ -152,7 +173,7 @@
                 <div id="phraseList" class="phrase-container"></div>
                 <div style="display:flex; gap:6px; margin-top:6px;">
                     <input type="text" id="newPhraseInput" placeholder="新增自訂常用詞" style="width: 200px;">
-                    <button onclick="addCustomPhrase()" style="padding:4px 10px; background:#4b5563; color:white; border:none; border-radius:4px; cursor:pointer;">+ 新增常用詞</button>
+                    <button onclick="addCustomPhrase()" style="padding:6px 12px; background:#4b5563; color:white; border:none; border-radius:4px; cursor:pointer;">+ 新增常用詞</button>
                 </div>
             </div>
 
@@ -182,9 +203,21 @@
             </div>
         </div>
 
-        <!-- 📢 發布區 -->
+        <!-- 📢 發布區 & 排版設定 -->
         <div class="publish-section">
-            <div class="section-title" style="color:#2e7d32;"><i class="fa-solid fa-bullhorn"></i> 第二步：選擇發布給家長與學生說明的日期</div>
+            <div class="section-title" style="color:#2e7d32;"><i class="fa-solid fa-bullhorn"></i> 第二步：排版設定與發布</div>
+            
+            <div class="panel-row" style="margin-bottom:15px; border-bottom:1px dashed #ccc; padding-bottom:15px;">
+                <div class="panel-group">
+                    <label style="color:#1565c0;">🖥️ 教室大螢幕字體大小 (同步給全班)：</label>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <button class="btn-zoom" onclick="adjustGlobalFontSize(-2)">➖ 縮小</button>
+                        <span id="fontSizeDisplay" style="font-size:18px; font-weight:bold; width: 60px; text-align:center;">26 px</span>
+                        <button class="btn-zoom" onclick="adjustGlobalFontSize(2)">➕ 放大</button>
+                    </div>
+                </div>
+            </div>
+
             <div class="panel-row">
                 <div class="panel-group">
                     <label style="color:#d32f2f;">【左欄 - 當日任務】選擇要發布的日期：</label>
@@ -198,9 +231,9 @@
         </div>
     </div>
 
-    <!-- 🔍 中間：老師當下打字「即時預覽黑板」 (僅登入時顯示) -->
+    <!-- 🔍 中間：老師當下打字「即時預覽黑板」 -->
     <div id="previewSection" style="width:100%; max-width:1050px; display:none; margin-bottom:20px;">
-        <div style="font-weight:bold; color:#1565c0; margin-bottom:6px;"><i class="fa-solid fa-eye"></i> 🔍 老師當下編輯日期之【即時畫面預覽】：</div>
+        <div style="font-weight:bold; color:#1565c0; margin-bottom:6px; font-family:'PingFang TC',sans-serif;"><i class="fa-solid fa-eye"></i> 🔍 老師當下編輯日期之【即時畫面預覽】：</div>
         <div class="blackboard" style="box-shadow:none; border:2px dashed #2196F3;">
             <div class="board-inner">
                 <div id="liveLeftContainer"></div>
@@ -209,9 +242,9 @@
         </div>
     </div>
 
-    <!-- 📢 最下方：家長與學生看得到的「公開發布黑板」 -->
+    <!-- 📢 最下方：公開發布黑板 -->
     <div style="width:100%; max-width:1050px;">
-        <div style="font-weight:bold; color:#2e7d32; margin-bottom:6px;"><i class="fa-solid fa-users"></i> 📢 家長與學生開啟網址看到的【最終發布黑板】：</div>
+        <div style="font-weight:bold; color:#2e7d32; margin-bottom:6px; font-family:'PingFang TC',sans-serif;"><i class="fa-solid fa-users"></i> 📢 家長與學生開啟網址看到的【最終發布黑板】：</div>
         <div class="blackboard">
             <div class="board-inner">
                 <div id="publicLeftContainer"></div>
@@ -220,29 +253,21 @@
         </div>
     </div>
 
-    <!-- 登入 Modal -->
+    <!-- 登入與修改密碼 Modal 區保留 -->
     <div id="loginModal" class="modal-overlay">
         <div class="modal-card">
             <h3 style="margin-bottom:10px;"><i class="fa-solid fa-user-lock"></i> 老師身分驗證</h3>
-            <div class="pwd-input-wrapper">
-                <input type="password" id="inputPassword" placeholder="請輸入管理密碼">
-                <i id="toggleEye" class="fa-solid fa-eye toggle-pwd-btn" onclick="togglePasswordVisibility('inputPassword', 'toggleEye')"></i>
-            </div>
+            <div class="pwd-input-wrapper"><input type="password" id="inputPassword" placeholder="請輸入管理密碼"><i id="toggleEye" class="fa-solid fa-eye toggle-pwd-btn" onclick="togglePasswordVisibility('inputPassword', 'toggleEye')"></i></div>
             <div style="display:flex; justify-content:flex-end; gap:8px;">
                 <button onclick="closeModal('loginModal')" style="padding:6px 12px; border:1px solid #ccc; background:white; border-radius:4px; cursor:pointer;">取消</button>
                 <button onclick="submitLogin()" style="padding:6px 12px; background:#4caf50; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">登入</button>
             </div>
         </div>
     </div>
-
-    <!-- 修改密碼 Modal -->
     <div id="changePwdModal" class="modal-overlay">
         <div class="modal-card">
             <h3 style="margin-bottom:10px;"><i class="fa-solid fa-key"></i> 修改管理密碼</h3>
-            <div class="pwd-input-wrapper">
-                <input type="password" id="newPassword" placeholder="輸入新密碼">
-                <i id="toggleEyeNew" class="fa-solid fa-eye toggle-pwd-btn" onclick="togglePasswordVisibility('newPassword', 'toggleEyeNew')"></i>
-            </div>
+            <div class="pwd-input-wrapper"><input type="password" id="newPassword" placeholder="輸入新密碼"><i id="toggleEyeNew" class="fa-solid fa-eye toggle-pwd-btn" onclick="togglePasswordVisibility('newPassword', 'toggleEyeNew')"></i></div>
             <div style="display:flex; justify-content:flex-end; gap:8px;">
                 <button onclick="closeModal('changePwdModal')" style="padding:6px 12px; border:1px solid #ccc; background:white; border-radius:4px; cursor:pointer;">取消</button>
                 <button onclick="submitChangePassword()" style="padding:6px 12px; background:#e0a800; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">確認修改</button>
@@ -252,15 +277,13 @@
 
     <script>
         const GAS_API_URL = "https://script.google.com/macros/s/AKfycbzuZkJ6KnbOIWunJJ3CZkx_g5zZDG4XweaxwduuSksCKVZL1V0OGnKTdOukf2X4Tx7B/exec";
-
         let isTeacher = false;
         let activeTargetTextarea = 'leftText';
-        let db = { classTitle: "612電子聯絡簿", password: "1234", activeLeftDate: "", activeRightDates: [], phrases: [], entries: {} };
+        let db = { classTitle: "612電子聯絡簿", password: "1234", activeLeftDate: "", activeRightDates: [], phrases: [], entries: {}, globalFontSize: 26 };
 
         window.onload = function() {
             initMonthSelect();
             fetchCloudData();
-
             document.getElementById('leftText').addEventListener('focus', () => activeTargetTextarea = 'leftText');
             document.getElementById('rightText').addEventListener('focus', () => activeTargetTextarea = 'rightText');
         };
@@ -268,26 +291,38 @@
         async function fetchCloudData() {
             try {
                 const res = await fetch(GAS_API_URL);
-                const data = await res.json();
-                db = data;
+                db = await res.json();
                 document.getElementById('classTitle').innerText = db.classTitle || "612電子聯絡簿";
+                
+                // 套用雲端字體大小
+                applyGlobalFontSize(db.globalFontSize || 26);
+                
                 renderPhrases();
                 renderTeacherPublishBoxes();
                 renderPublicBoard();
                 renderLivePreview();
-            } catch(e) {
-                console.log("雲端連線讀取中...");
-            }
+            } catch(e) { console.log("雲端連線讀取中..."); }
         }
 
-        function enableTitleEdit() {
-            if (isTeacher) {
-                const titleEl = document.getElementById('classTitle');
-                titleEl.contentEditable = "true";
-                titleEl.focus();
-            }
+        // --- 字體同步控制函數 ---
+        function applyGlobalFontSize(size) {
+            document.documentElement.style.setProperty('--board-font-size', size + 'px');
+            document.documentElement.style.setProperty('--board-title-size', (size + 2) + 'px');
+            document.getElementById('fontSizeDisplay').innerText = size + ' px';
         }
 
+        async function adjustGlobalFontSize(delta) {
+            if(!db.globalFontSize) db.globalFontSize = 26;
+            db.globalFontSize += delta;
+            if(db.globalFontSize < 16) db.globalFontSize = 16;
+            if(db.globalFontSize > 60) db.globalFontSize = 60;
+            
+            applyGlobalFontSize(db.globalFontSize);
+            await syncSettingsToCloud({ globalFontSize: db.globalFontSize });
+        }
+        // ------------------------
+
+        function enableTitleEdit() { if (isTeacher) { const titleEl = document.getElementById('classTitle'); titleEl.contentEditable = "true"; titleEl.focus(); } }
         async function saveClassTitle() {
             const newTitle = document.getElementById('classTitle').innerText.trim();
             if (newTitle && isTeacher) {
@@ -301,268 +336,102 @@
         function renderPhrases() {
             const box = document.getElementById('phraseList');
             box.innerHTML = '';
-            (db.phrases || []).forEach((p, idx) => {
-                box.innerHTML += `
-                    <div class="phrase-pill">
-                        <button class="phrase-btn" onclick="insertPhrase('${p}')">${p}</button>
-                        <button class="phrase-del-btn" onclick="deletePhrase(${idx})" title="刪除此詞彙">✕</button>
-                    </div>`;
-            });
+            (db.phrases || []).forEach((p, idx) => { box.innerHTML += `<div class="phrase-pill"><button class="phrase-btn" onclick="insertPhrase('${p}')">${p}</button><button class="phrase-del-btn" onclick="deletePhrase(${idx})">✕</button></div>`; });
         }
-
         function insertPhrase(text) {
             const area = document.getElementById(activeTargetTextarea);
-            const start = area.selectionStart;
-            const end = area.selectionEnd;
+            const start = area.selectionStart; const end = area.selectionEnd;
             area.value = area.value.substring(0, start) + text + area.value.substring(end);
-            area.focus();
-            area.selectionStart = area.selectionEnd = start + text.length;
-            onLiveEdit();
+            area.focus(); area.selectionStart = area.selectionEnd = start + text.length; onLiveEdit();
         }
-
         function addCustomPhrase() {
             const val = document.getElementById('newPhraseInput').value.trim();
-            if(val) {
-                if(!db.phrases) db.phrases = [];
-                db.phrases.push(val);
-                renderPhrases();
-                document.getElementById('newPhraseInput').value = '';
-                syncSettingsToCloud({ phrases: db.phrases });
-            }
+            if(val) { if(!db.phrases) db.phrases = []; db.phrases.push(val); renderPhrases(); document.getElementById('newPhraseInput').value = ''; syncSettingsToCloud({ phrases: db.phrases }); }
         }
-
-        function deletePhrase(idx) {
-            db.phrases.splice(idx, 1);
-            renderPhrases();
-            syncSettingsToCloud({ phrases: db.phrases });
-        }
+        function deletePhrase(idx) { db.phrases.splice(idx, 1); renderPhrases(); syncSettingsToCloud({ phrases: db.phrases }); }
 
         function onLiveEdit() {
             const curDate = document.getElementById('daySelect').value;
             if(!db.entries[curDate]) db.entries[curDate] = { left: '', right: '' };
-            db.entries[curDate].left = document.getElementById('leftText').value;
-            db.entries[curDate].right = document.getElementById('rightText').value;
+            db.entries[curDate].left = document.getElementById('leftText').value; db.entries[curDate].right = document.getElementById('rightText').value;
             renderLivePreview();
         }
-
         function renderLivePreview() {
             if(!isTeacher) return;
-            const curDate = document.getElementById('daySelect').value;
-            const entry = db.entries[curDate] || { left: '', right: '' };
-
-            document.getElementById('liveLeftContainer').innerHTML = `
-                <div class="card">
-                    <div class="card-header">☀️ 今日任務 (${curDate})</div>
-                    <div>${formatText(entry.left)}</div>
-                </div>`;
-
-            document.getElementById('liveRightContainer').innerHTML = `
-                <div class="card">
-                    <div class="card-header">📝 聯絡簿作業 (${curDate})</div>
-                    <div>${formatText(entry.right)}</div>
-                </div>`;
+            const curDate = document.getElementById('daySelect').value; const entry = db.entries[curDate] || { left: '', right: '' };
+            document.getElementById('liveLeftContainer').innerHTML = `<div class="card"><div class="card-header">☀️ 今日任務 (${curDate})</div><div>${formatText(entry.left)}</div></div>`;
+            document.getElementById('liveRightContainer').innerHTML = `<div class="card"><div class="card-header">📝 聯絡簿作業 (${curDate})</div><div>${formatText(entry.right)}</div></div>`;
         }
-
         function renderPublicBoard() {
-            const leftBox = document.getElementById('publicLeftContainer');
-            const leftDate = db.activeLeftDate;
-            const leftEntry = db.entries[leftDate] || { left: '' };
-            const leftTitle = `☀️ 今日任務 (${leftDate || '未發布'})`;
-
-            leftBox.innerHTML = `
-                <div class="card">
-                    <div class="card-header">${leftTitle}</div>
-                    <div>${formatText(leftEntry.left)}</div>
-                </div>`;
-
-            const rightBox = document.getElementById('publicRightContainer');
-            rightBox.innerHTML = '';
+            const leftBox = document.getElementById('publicLeftContainer'); const leftDate = db.activeLeftDate; const leftEntry = db.entries[leftDate] || { left: '' };
+            leftBox.innerHTML = `<div class="card"><div class="card-header">☀️ 今日任務 (${leftDate || '未發布'})</div><div>${formatText(leftEntry.left)}</div></div>`;
+            const rightBox = document.getElementById('publicRightContainer'); rightBox.innerHTML = '';
             (db.activeRightDates || []).forEach(d => {
-                const rightEntry = db.entries[d] || { right: '' };
-                const rightTitle = `📝 聯絡簿作業 (${d})`;
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `
-                    <div class="card-header">${rightTitle}</div>
-                    <div>${formatText(rightEntry.right)}</div>`;
-                rightBox.appendChild(card);
+                const rightEntry = db.entries[d] || { right: '' }; const card = document.createElement('div'); card.className = 'card';
+                card.innerHTML = `<div class="card-header">📝 聯絡簿作業 (${d})</div><div>${formatText(rightEntry.right)}</div>`; rightBox.appendChild(card);
             });
         }
 
-        async function sendToCloud(payload) {
-            try {
-                await fetch(GAS_API_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'text/plain' },
-                    body: JSON.stringify(payload)
-                });
-            } catch(e) {
-                console.log("雲端同步失敗:", e);
-            }
-        }
-
+        async function sendToCloud(payload) { try { await fetch(GAS_API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(payload) }); } catch(e) {} }
         async function saveSingleSide(side) {
-            const curDate = document.getElementById('daySelect').value;
-            if(!db.entries[curDate]) db.entries[curDate] = { left: '', right: '' };
-            
-            db.entries[curDate].left = document.getElementById('leftText').value;
-            db.entries[curDate].right = document.getElementById('rightText').value;
-
-            // 預設將新儲存的日期自動加入發布，確保第一次儲存就能看到
+            const curDate = document.getElementById('daySelect').value; if(!db.entries[curDate]) db.entries[curDate] = { left: '', right: '' };
+            db.entries[curDate].left = document.getElementById('leftText').value; db.entries[curDate].right = document.getElementById('rightText').value;
             if (!db.activeLeftDate) db.activeLeftDate = curDate;
-
-            const payload = {
-                entry: {
-                    date: curDate,
-                    left: db.entries[curDate].left,
-                    right: db.entries[curDate].right
-                },
-                settings: {
-                    activeLeftDate: db.activeLeftDate
-                }
-            };
-
-            await sendToCloud(payload);
-            alert(`已成功儲存 ${curDate} 【${side === 'left' ? '左欄' : '右欄'}】內容至雲端！`);
-            renderTeacherPublishBoxes();
-            renderPublicBoard();
+            await sendToCloud({ entry: { date: curDate, left: db.entries[curDate].left, right: db.entries[curDate].right }, settings: { activeLeftDate: db.activeLeftDate } });
+            alert(`已成功儲存 ${curDate} 內容至雲端！`); renderTeacherPublishBoxes(); renderPublicBoard();
         }
-
-        async function syncSettingsToCloud(settingsPayload) {
-            await sendToCloud({ settings: settingsPayload });
-        }
-
-        // 強制左欄選擇即時更新並傳送至雲端
-        async function setLeftDate(d) {
-            db.activeLeftDate = d;
-            renderPublicBoard();
-            await syncSettingsToCloud({ activeLeftDate: d });
-        }
-
-        // 強制右欄選擇即時更新並傳送至雲端
+        async function syncSettingsToCloud(settingsPayload) { await sendToCloud({ settings: settingsPayload }); }
+        async function setLeftDate(d) { db.activeLeftDate = d; renderPublicBoard(); await syncSettingsToCloud({ activeLeftDate: d }); }
         async function toggleRightDate(d, checked) {
             if(!db.activeRightDates) db.activeRightDates = [];
-            if(checked) { if(!db.activeRightDates.includes(d)) db.activeRightDates.push(d); }
-            else { db.activeRightDates = db.activeRightDates.filter(x => x !== d); }
-            renderPublicBoard();
-            await syncSettingsToCloud({ activeRightDates: db.activeRightDates });
+            if(checked) { if(!db.activeRightDates.includes(d)) db.activeRightDates.push(d); } else { db.activeRightDates = db.activeRightDates.filter(x => x !== d); }
+            renderPublicBoard(); await syncSettingsToCloud({ activeRightDates: db.activeRightDates });
         }
 
         function handleAuth() {
-            if (!isTeacher) {
-                document.getElementById('inputPassword').value = '';
-                document.getElementById('loginModal').style.display = 'flex';
-            } else {
-                isTeacher = false;
-                document.body.classList.remove('teacher-mode');
-                document.getElementById('authBtn').innerHTML = `<i class="fa-solid fa-lock"></i> 老師登入`;
-                document.getElementById('authBtn').classList.remove('is-teacher');
-                document.getElementById('previewSection').style.display = 'none';
-                document.getElementById('classTitle').contentEditable = "false";
-            }
+            if (!isTeacher) { document.getElementById('inputPassword').value = ''; document.getElementById('loginModal').style.display = 'flex'; }
+            else { isTeacher = false; document.body.classList.remove('teacher-mode'); document.getElementById('authBtn').innerHTML = `<i class="fa-solid fa-lock"></i> 老師登入`; document.getElementById('previewSection').style.display = 'none'; }
         }
-
         function submitLogin() {
-            const input = document.getElementById('inputPassword').value;
-            if (input === (db.password || "1234")) {
-                isTeacher = true;
-                document.body.classList.add('teacher-mode');
-                document.getElementById('authBtn').innerHTML = `<i class="fa-solid fa-unlock"></i> 退出管理`;
-                document.getElementById('authBtn').classList.add('is-teacher');
-                document.getElementById('previewSection').style.display = 'block';
-                closeModal('loginModal');
-                renderTeacherPublishBoxes();
-                renderLivePreview();
+            if (document.getElementById('inputPassword').value === (db.password || "1234")) {
+                isTeacher = true; document.body.classList.add('teacher-mode'); document.getElementById('authBtn').innerHTML = `<i class="fa-solid fa-unlock"></i> 退出管理`;
+                document.getElementById('previewSection').style.display = 'block'; closeModal('loginModal'); renderTeacherPublishBoxes(); renderLivePreview();
             } else { alert("密碼錯誤！"); }
         }
-
         function openChangePwdModal() { document.getElementById('changePwdModal').style.display = 'flex'; }
         function submitChangePassword() {
             const newPwd = document.getElementById('newPassword').value.trim();
-            if (newPwd) {
-                db.password = newPwd;
-                syncSettingsToCloud({ password: newPwd });
-                closeModal('changePwdModal');
-                alert("密碼修改成功！");
-            }
+            if (newPwd) { db.password = newPwd; syncSettingsToCloud({ password: newPwd }); closeModal('changePwdModal'); alert("密碼修改成功！"); }
         }
-
         function togglePasswordVisibility(inputId, eyeId) {
-            const input = document.getElementById(inputId);
-            const eye = document.getElementById(eyeId);
-            if (input.type === "password") { input.type = "text"; eye.classList.remove("fa-eye"); eye.classList.add("fa-eye-slash"); }
-            else { input.type = "password"; eye.classList.remove("fa-eye-slash"); eye.classList.add("fa-eye"); }
+            const input = document.getElementById(inputId); const eye = document.getElementById(eyeId);
+            if (input.type === "password") { input.type = "text"; eye.classList.remove("fa-eye"); eye.classList.add("fa-eye-slash"); } else { input.type = "password"; eye.classList.remove("fa-eye-slash"); eye.classList.add("fa-eye"); }
         }
-
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
         function initMonthSelect() {
-            const monthSelect = document.getElementById('monthSelect');
-            monthSelect.innerHTML = '';
-            const months = [
-                { text: "115 年 08 月", val: "115-08" }, { text: "115 年 09 月", val: "115-09" },
-                { text: "115 年 10 月", val: "115-10" }, { text: "115 年 11 月", val: "115-11" },
-                { text: "115 年 12 月", val: "115-12" }, { text: "116 年 01 月", val: "116-01" }
-            ];
-            months.forEach(m => monthSelect.innerHTML += `<option value="${m.val}">${m.text}</option>`);
-            updateDaySelect();
+            const monthSelect = document.getElementById('monthSelect'); monthSelect.innerHTML = '';
+            const months = [{ text: "115 年 08 月", val: "115-08" }, { text: "115 年 09 月", val: "115-09" }, { text: "115 年 10 月", val: "115-10" }];
+            months.forEach(m => monthSelect.innerHTML += `<option value="${m.val}">${m.text}</option>`); updateDaySelect();
         }
-
         function updateDaySelect() {
-            const yearMonth = document.getElementById('monthSelect').value;
-            const daySelect = document.getElementById('daySelect');
-            daySelect.innerHTML = '';
-            for(let i=1; i<=31; i++) {
-                const dayStr = i < 10 ? `0${i}` : `${i}`;
-                const fullDate = `${yearMonth}-${dayStr}`;
-                daySelect.innerHTML += `<option value="${fullDate}">${yearMonth}-${dayStr}</option>`;
-            }
-            loadDateContent();
+            const yearMonth = document.getElementById('monthSelect').value; const daySelect = document.getElementById('daySelect'); daySelect.innerHTML = '';
+            for(let i=1; i<=31; i++) { const dayStr = i < 10 ? `0${i}` : `${i}`; daySelect.innerHTML += `<option value="${yearMonth}-${dayStr}">${yearMonth}-${dayStr}</option>`; } loadDateContent();
         }
-
         function loadDateContent() {
-            const curDate = document.getElementById('daySelect').value;
-            const entry = db.entries[curDate] || { left: '', right: '' };
-            document.getElementById('leftText').value = entry.left || '';
-            document.getElementById('rightText').value = entry.right || '';
-            renderLivePreview();
+            const curDate = document.getElementById('daySelect').value; const entry = db.entries[curDate] || { left: '', right: '' };
+            document.getElementById('leftText').value = entry.left || ''; document.getElementById('rightText').value = entry.right || ''; renderLivePreview();
         }
-
         function renderTeacherPublishBoxes() {
-            if (!isTeacher) return;
-            const allDates = Object.keys(db.entries).sort();
-            
-            const leftSelect = document.getElementById('leftPublishSelect');
-            leftSelect.innerHTML = '<option value="">-- 請選擇要發布的日期 --</option>';
-            allDates.forEach(d => {
-                const selected = db.activeLeftDate === d ? 'selected' : '';
-                leftSelect.innerHTML += `<option value="${d}" ${selected}>${d}</option>`;
-            });
-
-            const rightGroup = document.getElementById('rightDateCheckboxGroup');
-            rightGroup.innerHTML = '';
-            allDates.forEach(d => {
-                const isChecked = (db.activeRightDates || []).includes(d);
-                rightGroup.innerHTML += `<label><input type="checkbox" value="${d}" ${isChecked ? 'checked' : ''} onchange="toggleRightDate('${d}', this.checked)"> ${d}</label>`;
-            });
+            if (!isTeacher) return; const allDates = Object.keys(db.entries).sort(); const leftSelect = document.getElementById('leftPublishSelect'); leftSelect.innerHTML = '<option value="">-- 請選擇要發布的日期 --</option>';
+            allDates.forEach(d => { leftSelect.innerHTML += `<option value="${d}" ${db.activeLeftDate === d ? 'selected' : ''}>${d}</option>`; });
+            const rightGroup = document.getElementById('rightDateCheckboxGroup'); rightGroup.innerHTML = '';
+            allDates.forEach(d => { rightGroup.innerHTML += `<label><input type="checkbox" value="${d}" ${(db.activeRightDates || []).includes(d) ? 'checked' : ''} onchange="toggleRightDate('${d}', this.checked)"> ${d}</label>`; });
         }
-
-        function formatText(str) {
-            if (!str) return '<em>(無內容)</em>';
-            return str.replace(/\n/g, '<br>')
-                      .replace(/<yellow>/g, '<yellow>').replace(/<\/yellow>/g, '</yellow>')
-                      .replace(/<blue>/g, '<blue>').replace(/<\/blue>/g, '</blue>')
-                      .replace(/<pink>/g, '<pink>').replace(/<\/pink>/g, '</pink>');
-        }
-
+        function formatText(str) { return (!str) ? '<em>(無內容)</em>' : str.replace(/\n/g, '<br>').replace(/<yellow>/g, '<yellow>').replace(/<\/yellow>/g, '</yellow>').replace(/<blue>/g, '<blue>').replace(/<\/blue>/g, '</blue>').replace(/<pink>/g, '<pink>').replace(/<\/pink>/g, '</pink>'); }
         function addTag(id, tag) {
-            const area = document.getElementById(id);
-            const start = area.selectionStart;
-            const end = area.selectionEnd;
-            const txt = area.value.substring(start, end);
-            area.value = area.value.substring(0, start) + `<${tag}>${txt}</${tag}>` + area.value.substring(end);
-            onLiveEdit();
+            const area = document.getElementById(id); const start = area.selectionStart; const end = area.selectionEnd;
+            area.value = area.value.substring(0, start) + `<${tag}>${area.value.substring(start, end)}</${tag}>` + area.value.substring(end); onLiveEdit();
         }
     </script>
 </body>
