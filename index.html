@@ -25,7 +25,7 @@
         .top-bar {
             width: 100%; max-width: 1050px;
             display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 12px; flex-wrap: wrap; gap: 10px;
+            margin-bottom: 12px;
         }
         .class-title {
             font-size: 26px; font-weight: bold; color: #333;
@@ -37,9 +37,6 @@
             background: #e3f2fd; 
             cursor: pointer;
         }
-        
-        .top-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-
         .auth-btn, .fullscreen-btn {
             background: #ffffff; border: 1px solid #ccc; padding: 6px 14px;
             border-radius: 20px; cursor: pointer; font-size: 15px; font-weight: bold; color: #555;
@@ -80,37 +77,22 @@
             border: 1px solid #ced4da; border-radius: 15px; padding: 2px 8px; font-size: 15px;
         }
         .phrase-btn { border: none; background: transparent; cursor: pointer; font-weight: bold; font-family: "BiauKai", "DFKai-SB", "標楷體", sans-serif; }
-        .phrase-del-btn {
-            border: none; background: transparent; color: #d32f2f; margin-left: 4px;
-            cursor: pointer; font-size: 13px; font-weight: bold;
-        }
+        .phrase-del-btn { border: none; background: transparent; color: #d32f2f; margin-left: 4px; cursor: pointer; font-size: 13px; font-weight: bold; }
 
         .date-checkboxes { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 5px; max-height: 100px; overflow-y: auto; }
         .date-checkboxes label { background: white; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; font-size: 15px; font-weight:bold; }
 
-        /* 黑板主體風格 */
         .blackboard {
             width: 100%; max-width: 1050px; background-color: #3b281c;
             padding: 14px; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.25); margin-bottom: 20px;
             position: relative;
         }
-        
-        /* 螢幕原生全螢幕下的黑板滿版設定 */
         .blackboard:fullscreen {
-            width: 100vw !important;
-            height: 100vh !important;
-            max-width: none !important;
-            border-radius: 0 !important;
-            padding: 20px !important;
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: center !important;
-            background-color: #3b281c !important;
+            width: 100vw !important; height: 100vh !important; max-width: none !important;
+            border-radius: 0 !important; padding: 20px !important; display: flex !important;
+            flex-direction: column !important; justify-content: center !important; background-color: #3b281c !important;
         }
-        .blackboard:fullscreen .board-inner {
-            height: 100% !important;
-            min-height: 0 !important;
-        }
+        .blackboard:fullscreen .board-inner { height: 100% !important; min-height: 0 !important; }
 
         .board-inner {
             background-color: #274e3d; border: 2px dashed rgba(255, 255, 255, 0.3);
@@ -135,9 +117,12 @@
         yellow { color: #ffe066; font-weight: bold; }
         blue { color: #80e5ff; font-weight: bold; }
         pink { color: #ff9ebb; font-weight: bold; }
+        green { color: #81c784; font-weight: bold; }
+        orange { color: #ffb74d; font-weight: bold; }
+        purple { color: #e1bee7; font-weight: bold; }
         
-        .color-palette { display: inline-flex; gap: 6px; margin-left: 10px; }
-        .color-dot { width: 20px; height: 20px; border-radius: 50%; cursor: pointer; border: 1px solid #999; display: inline-block; }
+        .color-palette { display: inline-flex; gap: 6px; margin-left: 8px; vertical-align: middle; }
+        .color-dot { width: 18px; height: 18px; border-radius: 50%; cursor: pointer; border: 1px solid #fff; display: inline-block; }
 
         .btn-save {
             padding: 10px 16px; background: #2e7d32; color: white;
@@ -146,21 +131,24 @@
         }
         .btn-save:hover { background: #1b5e20; }
         .btn-zoom {
-            background: #ffffff; border: 1px solid #ccc; padding: 4px 10px;
-            border-radius: 4px; cursor: pointer; font-weight: bold; color: #333;
+            background: #ffffff; border: 1px solid #ccc; padding: 2px 8px;
+            border-radius: 4px; cursor: pointer; font-weight: bold; color: #333; font-size: 13px;
         }
 
         .edit-section { background: #e3f2fd; padding: 15px; border-radius: 8px; border: 1px solid #bbdefb; margin-bottom: 20px; }
         .publish-section { background: #f1f8e9; padding: 15px; border-radius: 8px; border: 1px solid #c8e6c9; margin-bottom: 15px; }
         .section-title { font-size: 17px; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
 
+        .mode-box {
+            background: white; border: 1px solid #a7f3d0; border-radius: 8px; padding: 12px; margin-bottom: 12px;
+        }
+        .mode-box label { font-size: 15px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+
         .exit-fullscreen-btn {
             display: none; position: absolute; top: 25px; right: 25px;
             background: rgba(0, 0, 0, 0.6); color: white; border: 1px solid rgba(255, 255, 255, 0.5);
             padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 14px; z-index: 100;
-            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
         }
-        .exit-fullscreen-btn:hover { background: rgba(0, 0, 0, 0.8); }
         .blackboard:fullscreen .exit-fullscreen-btn { display: block; }
 
         .modal-overlay {
@@ -176,9 +164,8 @@
 
     <div class="top-bar">
         <div id="classTitle" class="class-title" contenteditable="false" onclick="enableTitleEdit()" onblur="saveClassTitle()" title="登入後點擊可修改標題">612電子聯絡簿</div>
-        
-        <div class="top-actions">
-            <button class="fullscreen-btn" onclick="toggleBlackboardFullscreen()"><i class="fa-solid fa-expand"></i> 🖥️ 全螢幕投影</button>
+        <div style="display:flex; gap:8px;">
+            <button class="fullscreen-btn" onclick="toggleBlackboardFullscreen()"><i class="fa-solid fa-expand"></i> 🖥️ 全螢幕</button>
             <button id="authBtn" class="auth-btn" onclick="handleAuth()"><i class="fa-solid fa-lock"></i> 老師登入</button>
         </div>
     </div>
@@ -192,9 +179,8 @@
             </button>
         </div>
         
-        <!-- ✍️ 編輯區 -->
         <div class="edit-section">
-            <div class="section-title" style="color:#1565c0;"><i class="fa-solid fa-pen-to-square"></i> 第一步：選取日期並編輯文字</div>
+            <div class="section-title" style="color:#1565c0;"><i class="fa-solid fa-pen-to-square"></i> 第一步：選取日期並編輯文字與顏色</div>
             <div class="panel-row">
                 <div class="panel-group">
                     <label>選擇月份：</label>
@@ -207,7 +193,7 @@
             </div>
 
             <div class="panel-group" style="margin-bottom:12px;">
-                <label>⚡ 常用詞彙（點擊插入，點擊「✕」可直接刪除常用詞）：</label>
+                <label>⚡ 常用詞彙（點擊插入）：</label>
                 <div id="phraseList" class="phrase-container"></div>
                 <div style="display:flex; gap:6px; margin-top:6px;">
                     <input type="text" id="newPhraseInput" placeholder="新增自訂常用詞" style="width: 200px;">
@@ -216,62 +202,117 @@
             </div>
 
             <div class="panel-row">
+                <!-- 左欄：單字獨立放大選單 + 調色盤 -->
                 <div class="panel-group">
-                    <label>左欄內容 (當日任務)：
-                        <span class="color-palette">
-                            <span class="color-dot" style="background:#ffe066;" onclick="addTag('leftText','yellow')"></span>
-                            <span class="color-dot" style="background:#80e5ff;" onclick="addTag('leftText','blue')"></span>
-                            <span class="color-dot" style="background:#ff9ebb;" onclick="addTag('leftText','pink')"></span>
-                        </span>
-                    </label>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <label style="margin:0;">左欄內容 (當日任務)：</label>
+                        <div>
+                            <button class="btn-zoom" onclick="adjustSideFontSize('left', -2)">➖</button>
+                            <span id="leftFontSizeDisp" style="font-size:13px; font-weight:bold;">26px</span>
+                            <button class="btn-zoom" onclick="adjustSideFontSize('left', 2)">➕</button>
+                        </div>
+                    </div>
+                    <div style="margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+                        <div>
+                            <span style="font-size:13px; color:#555;">🎨 劃重點：</span>
+                            <span class="color-palette">
+                                <span class="color-dot" style="background:#ffe066;" onclick="addTag('leftText','yellow')" title="黃色"></span>
+                                <span class="color-dot" style="background:#80e5ff;" onclick="addTag('leftText','blue')" title="藍色"></span>
+                                <span class="color-dot" style="background:#ff9ebb;" onclick="addTag('leftText','pink')" title="粉色"></span>
+                                <span class="color-dot" style="background:#81c784;" onclick="addTag('leftText','green')" title="綠色"></span>
+                                <span class="color-dot" style="background:#ffb74d;" onclick="addTag('leftText','orange')" title="橘色"></span>
+                                <span class="color-dot" style="background:#e1bee7;" onclick="addTag('leftText','purple')" title="紫色"></span>
+                            </span>
+                        </div>
+                        <!-- 單字獨立縮放選單 -->
+                        <div style="display:flex; align-items:center; gap:4px;">
+                            <span style="font-size:13px; color:#555; font-weight:bold;">🔤 選字放大：</span>
+                            <select onchange="applyInlineFontSize('leftText', this.value); this.value='';" style="width:auto; padding:2px 4px; font-size:12px;">
+                                <option value="">選取字體大小...</option>
+                                <option value="1.3">大 (1.3倍)</option>
+                                <option value="1.6">超大 (1.6倍)</option>
+                                <option value="2.0">特大 (2倍)</option>
+                                <option value="1.0">恢復正常大小</option>
+                            </select>
+                        </div>
+                    </div>
                     <textarea id="leftText" rows="5" oninput="onLiveEdit()"></textarea>
                     <button class="btn-save" style="margin-top:5px; width:100%;" onclick="saveSingleSide('left')">💾 儲存該日左欄至雲端</button>
                 </div>
+
+                <!-- 右欄：單字獨立放大選單 + 調色盤 -->
                 <div class="panel-group">
-                    <label>右欄內容 (聯絡簿作業)：
-                        <span class="color-palette">
-                            <span class="color-dot" style="background:#ffe066;" onclick="addTag('rightText','yellow')"></span>
-                            <span class="color-dot" style="background:#80e5ff;" onclick="addTag('rightText','blue')"></span>
-                            <span class="color-dot" style="background:#ff9ebb;" onclick="addTag('rightText','pink')"></span>
-                        </span>
-                    </label>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <label style="margin:0;">右欄內容 (聯絡簿作業)：</label>
+                        <div>
+                            <button class="btn-zoom" onclick="adjustSideFontSize('right', -2)">➖</button>
+                            <span id="rightFontSizeDisp" style="font-size:13px; font-weight:bold;">26px</span>
+                            <button class="btn-zoom" onclick="adjustSideFontSize('right', 2)">➕</button>
+                        </div>
+                    </div>
+                    <div style="margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+                        <div>
+                            <span style="font-size:13px; color:#555;">🎨 劃重點：</span>
+                            <span class="color-palette">
+                                <span class="color-dot" style="background:#ffe066;" onclick="addTag('rightText','yellow')" title="黃色"></span>
+                                <span class="color-dot" style="background:#80e5ff;" onclick="addTag('rightText','blue')" title="藍色"></span>
+                                <span class="color-dot" style="background:#ff9ebb;" onclick="addTag('rightText','pink')" title="粉色"></span>
+                                <span class="color-dot" style="background:#81c784;" onclick="addTag('rightText','green')" title="綠色"></span>
+                                <span class="color-dot" style="background:#ffb74d;" onclick="addTag('rightText','orange')" title="橘色"></span>
+                                <span class="color-dot" style="background:#e1bee7;" onclick="addTag('rightText','purple')" title="紫色"></span>
+                            </span>
+                        </div>
+                        <!-- 單字獨立縮放選單 -->
+                        <div style="display:flex; align-items:center; gap:4px;">
+                            <span style="font-size:13px; color:#555; font-weight:bold;">🔤 選字放大：</span>
+                            <select onchange="applyInlineFontSize('rightText', this.value); this.value='';" style="width:auto; padding:2px 4px; font-size:12px;">
+                                <option value="">選取字體大小...</option>
+                                <option value="1.3">大 (1.3倍)</option>
+                                <option value="1.6">超大 (1.6倍)</option>
+                                <option value="2.0">特大 (2倍)</option>
+                                <option value="1.0">恢復正常大小</option>
+                            </select>
+                        </div>
+                    </div>
                     <textarea id="rightText" rows="5" oninput="onLiveEdit()"></textarea>
                     <button class="btn-save" style="margin-top:5px; width:100%;" onclick="saveSingleSide('right')">💾 儲存該日右欄至雲端</button>
                 </div>
             </div>
         </div>
 
-        <!-- 📢 發布區 & 排版設定 -->
         <div class="publish-section">
-            <div class="section-title" style="color:#2e7d32;"><i class="fa-solid fa-bullhorn"></i> 第二步：排版設定與發布</div>
+            <div class="section-title" style="color:#2e7d32;"><i class="fa-solid fa-bullhorn"></i> 第二步：選擇發布呈現模式（二選一）</div>
             
-            <div class="panel-row" style="margin-bottom:15px; border-bottom:1px dashed #ccc; padding-bottom:15px;">
-                <div class="panel-group">
-                    <label style="color:#1565c0;">🖥️ 教室大螢幕字體大小 (同步給全班)：</label>
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <button class="btn-zoom" onclick="adjustGlobalFontSize(-2)">➖ 縮小</button>
-                        <span id="fontSizeDisplay" style="font-size:18px; font-weight:bold; width: 60px; text-align:center;">26 px</span>
-                        <button class="btn-zoom" onclick="adjustGlobalFontSize(2)">➕ 放大</button>
-                    </div>
-                </div>
+            <div class="mode-box">
+                <label style="color:#059669;">
+                    <input type="radio" name="publishMode" id="modeAuto" onchange="switchPublishMode('auto')">
+                    🤖 【選項一：自動排程模式】系統會根據今天的實際日期，自動呈現當天的任務與聯絡簿（無需手動調）
+                </label>
             </div>
 
-            <div class="panel-row">
-                <div class="panel-group">
-                    <label style="color:#d32f2f;">【左欄 - 當日任務】選擇要發布的日期：</label>
-                    <select id="leftPublishSelect" onchange="setLeftDate(this.value)" style="border: 2px solid #4caf50; background: #fff; font-weight:bold;"></select>
-                </div>
-                <div class="panel-group">
-                    <label style="color:#d32f2f;">【右欄 - 聯絡簿】選擇要發布的日期 (多選)：</label>
-                    <div id="rightDateCheckboxGroup" class="date-checkboxes"></div>
+            <div class="mode-box">
+                <label style="color:#d97706; margin-bottom:8px;">
+                    <input type="radio" name="publishMode" id="modeManual" onchange="switchPublishMode('manual')">
+                    📌 【選項二：老師手動自訂】適用於連假或特殊狀況（跨多天選擇），時間過後自動切回當日
+                </label>
+                <div id="manualControls" style="display:none; padding-top:8px; border-top:1px dashed #fcd34d;">
+                    <div class="panel-row">
+                        <div class="panel-group">
+                            <label style="color:#d32f2f; font-size:14px;">【左欄】指定發布日期：</label>
+                            <select id="leftPublishSelect" onchange="setLeftDate(this.value)"></select>
+                        </div>
+                        <div class="panel-group">
+                            <label style="color:#d32f2f; font-size:14px;">【右欄】指定發布日期 (可多選連假)：</label>
+                            <div id="rightDateCheckboxGroup" class="date-checkboxes"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 🔍 中間：老師當下打字「即時預覽黑板」 -->
     <div id="previewSection" style="width:100%; max-width:1050px; display:none; margin-bottom:20px;">
-        <div style="font-weight:bold; color:#1565c0; margin-bottom:6px; font-family:'PingFang TC',sans-serif;"><i class="fa-solid fa-eye"></i> 🔍 老師當下編輯日期之【即時畫面預覽】：</div>
+        <div style="font-weight:bold; color:#1565c0; margin-bottom:6px;"><i class="fa-solid fa-eye"></i> 🔍 老師當下編輯日期之【即時畫面預覽】：</div>
         <div class="blackboard" style="box-shadow:none; border:2px dashed #2196F3;">
             <div class="board-inner">
                 <div id="liveLeftContainer"></div>
@@ -280,9 +321,8 @@
         </div>
     </div>
 
-    <!-- 📢 最下方：公開發布黑板（全螢幕投影標的） -->
     <div style="width:100%; max-width:1050px;">
-        <div style="font-weight:bold; color:#2e7d32; margin-bottom:6px; font-family:'PingFang TC',sans-serif;"><i class="fa-solid fa-users"></i> 📢 家長與學生開啟網址看到的【最終發布黑板】：</div>
+        <div style="font-weight:bold; color:#2e7d32; margin-bottom:6px;"><i class="fa-solid fa-users"></i> 📢 家長與學生開啟網址看到的【最終發布黑板】：</div>
         <div id="publicBlackboard" class="blackboard">
             <button class="exit-fullscreen-btn" onclick="exitBlackboardFullscreen()"><i class="fa-solid fa-compress"></i> 退出全螢幕 (Esc)</button>
             <div class="board-inner">
@@ -292,7 +332,6 @@
         </div>
     </div>
 
-    <!-- 登入與修改密碼 Modal 區 -->
     <div id="loginModal" class="modal-overlay">
         <div class="modal-card">
             <h3 style="margin-bottom:10px;"><i class="fa-solid fa-user-lock"></i> 老師身分驗證</h3>
@@ -318,7 +357,13 @@
         const GAS_API_URL = "https://script.google.com/macros/s/AKfycbzuZkJ6KnbOIWunJJ3CZkx_g5zZDG4XweaxwduuSksCKVZL1V0OGnKTdOukf2X4Tx7B/exec";
         let isTeacher = false;
         let activeTargetTextarea = 'leftText';
-        let db = { classTitle: "612電子聯絡簿", password: "1234", activeLeftDate: "", activeRightDates: [], phrases: [], entries: {}, globalFontSize: 26 };
+        let db = { 
+            classTitle: "612電子聯絡簿", password: "1234", 
+            activeLeftDate: "", activeRightDates: [], 
+            phrases: [], entries: {}, 
+            publishMode: "auto",
+            leftFontSize: 26, rightFontSize: 26 
+        };
 
         window.onload = function() {
             initMonthSelect();
@@ -327,24 +372,19 @@
             document.getElementById('rightText').addEventListener('focus', () => activeTargetTextarea = 'rightText');
         };
 
-        // --- 全螢幕功能 ---
         function toggleBlackboardFullscreen() {
             const board = document.getElementById('publicBlackboard');
             if (!document.fullscreenElement) {
                 if (board.requestFullscreen) board.requestFullscreen();
                 else if (board.webkitRequestFullscreen) board.webkitRequestFullscreen();
                 else if (board.msRequestFullscreen) board.msRequestFullscreen();
-            } else {
-                exitBlackboardFullscreen();
-            }
+            } else { exitBlackboardFullscreen(); }
         }
-
         function exitBlackboardFullscreen() {
             if (document.exitFullscreen) document.exitFullscreen();
             else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
             else if (document.msExitFullscreen) document.msExitFullscreen();
         }
-        // ------------------
 
         async function fetchCloudData() {
             try {
@@ -352,29 +392,144 @@
                 db = await res.json();
                 document.getElementById('classTitle').innerText = db.classTitle || "612電子聯絡簿";
                 
-                applyGlobalFontSize(db.globalFontSize || 26);
+                applySideFontSizes(db.leftFontSize || 26, db.rightFontSize || 26);
+                setModeUI(db.publishMode || 'auto');
                 
-                renderPhrases();
-                renderTeacherPublishBoxes();
-                renderPublicBoard();
-                renderLivePreview();
+                renderPhrases(); renderTeacherPublishBoxes(); renderPublicBoard(); renderLivePreview();
             } catch(e) { console.log("雲端連線讀取中..."); }
         }
 
-        function applyGlobalFontSize(size) {
-            document.documentElement.style.setProperty('--board-font-size', size + 'px');
-            document.documentElement.style.setProperty('--board-title-size', (size + 2) + 'px');
-            document.getElementById('fontSizeDisplay').innerText = size + ' px';
+        // --- 單字獨立縮放核心函數 ---
+        function applyInlineFontSize(textAreaId, scale) {
+            if (!scale) return;
+            const area = document.getElementById(textAreaId);
+            const start = area.selectionStart;
+            const end = area.selectionEnd;
+            const selectedText = area.value.substring(start, end);
+
+            if (!selectedText) {
+                alert("請先用滑鼠選取您想要改變大小的文字！");
+                return;
+            }
+
+            let wrappedText = "";
+            if (scale === "1.0") {
+                wrappedText = selectedText;
+            } else {
+                wrappedText = `<span style="font-size:${scale}em;">${selectedText}</span>`;
+            }
+
+            area.value = area.value.substring(0, start) + wrappedText + area.value.substring(end);
+            onLiveEdit();
         }
 
-        async function adjustGlobalFontSize(delta) {
-            if(!db.globalFontSize) db.globalFontSize = 26;
-            db.globalFontSize += delta;
-            if(db.globalFontSize < 16) db.globalFontSize = 16;
-            if(db.globalFontSize > 60) db.globalFontSize = 60;
-            
-            applyGlobalFontSize(db.globalFontSize);
-            await syncSettingsToCloud({ globalFontSize: db.globalFontSize });
+        function applySideFontSizes(lSize, rSize) {
+            db.leftFontSize = lSize; db.rightFontSize = rSize;
+            document.getElementById('leftFontSizeDisp').innerText = lSize + 'px';
+            document.getElementById('rightFontSizeDisp').innerText = rSize + 'px';
+            renderPublicBoard(); renderLivePreview();
+        }
+
+        async function adjustSideFontSize(side, delta) {
+            if (side === 'left') {
+                db.leftFontSize = (db.leftFontSize || 26) + delta;
+                if (db.leftFontSize < 16) db.leftFontSize = 16;
+                if (db.leftFontSize > 60) db.leftFontSize = 60;
+            } else {
+                db.rightFontSize = (db.rightFontSize || 26) + delta;
+                if (db.rightFontSize < 16) db.rightFontSize = 16;
+                if (db.rightFontSize > 60) db.rightFontSize = 60;
+            }
+            applySideFontSizes(db.leftFontSize, db.rightFontSize);
+            await syncSettingsToCloud({ leftFontSize: db.leftFontSize, rightFontSize: db.rightFontSize });
+        }
+
+        function setModeUI(mode) {
+            db.publishMode = mode;
+            if (mode === 'auto') {
+                document.getElementById('modeAuto').checked = true;
+                document.getElementById('modeManual').checked = false;
+                document.getElementById('manualControls').style.display = 'none';
+            } else {
+                document.getElementById('modeAuto').checked = false;
+                document.getElementById('modeManual').checked = true;
+                document.getElementById('manualControls').style.display = 'block';
+            }
+        }
+
+        async function switchPublishMode(mode) {
+            setModeUI(mode);
+            renderPublicBoard();
+            await syncSettingsToCloud({ publishMode: mode });
+        }
+
+        function getTodayDateString() {
+            const now = new Date();
+            const year = now.getFullYear() - 1911;
+            const month = (now.getMonth() + 1).toString().padStart(2, '0');
+            const day = now.getDate().toString().padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function renderPublicBoard() {
+            const todayStr = getTodayDateString();
+            let targetLeftDate = "";
+            let targetRightDates = [];
+
+            if (db.publishMode === 'auto') {
+                targetLeftDate = todayStr;
+                targetRightDates = [todayStr];
+            } else {
+                targetLeftDate = db.activeLeftDate || todayStr;
+                targetRightDates = (db.activeRightDates && db.activeRightDates.length > 0) ? db.activeRightDates : [todayStr];
+
+                if (targetLeftDate < todayStr) targetLeftDate = todayStr;
+                targetRightDates = targetRightDates.filter(d => d >= todayStr);
+                if (targetRightDates.length === 0) targetRightDates = [todayStr];
+            }
+
+            const leftBox = document.getElementById('publicLeftContainer');
+            const leftEntry = db.entries[targetLeftDate] || { left: '' };
+            const lSize = db.leftFontSize || 26;
+            leftBox.innerHTML = `
+                <div class="card" style="font-size:${lSize}px;">
+                    <div class="card-header" style="font-size:${lSize+2}px;">☀️ 今日任務 (${targetLeftDate})</div>
+                    <div>${formatText(leftEntry.left)}</div>
+                </div>`;
+
+            const rightBox = document.getElementById('publicRightContainer');
+            const rSize = db.rightFontSize || 26;
+            rightBox.innerHTML = '';
+            targetRightDates.forEach(d => {
+                const rightEntry = db.entries[d] || { right: '' };
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.style.fontSize = rSize + 'px';
+                card.innerHTML = `
+                    <div class="card-header" style="font-size:${rSize+2}px;">📝 聯絡簿作業 (${d})</div>
+                    <div>${formatText(rightEntry.right)}</div>`;
+                rightBox.appendChild(card);
+            });
+        }
+
+        function renderLivePreview() {
+            if(!isTeacher) return;
+            const curDate = document.getElementById('daySelect').value;
+            const entry = db.entries[curDate] || { left: '', right: '' };
+            const lSize = db.leftFontSize || 26;
+            const rSize = db.rightFontSize || 26;
+
+            document.getElementById('liveLeftContainer').innerHTML = `
+                <div class="card" style="font-size:${lSize}px;">
+                    <div class="card-header" style="font-size:${lSize+2}px;">☀️ 今日任務 (${curDate})</div>
+                    <div>${formatText(entry.left)}</div>
+                </div>`;
+
+            document.getElementById('liveRightContainer').innerHTML = `
+                <div class="card" style="font-size:${rSize}px;">
+                    <div class="card-header" style="font-size:${rSize+2}px;">📝 聯絡簿作業 (${curDate})</div>
+                    <div>${formatText(entry.right)}</div>
+                </div>`;
         }
 
         function enableTitleEdit() { if (isTeacher) { const titleEl = document.getElementById('classTitle'); titleEl.contentEditable = "true"; titleEl.focus(); } }
@@ -384,7 +539,6 @@
                 document.getElementById('classTitle').contentEditable = "false";
                 db.classTitle = newTitle;
                 await syncSettingsToCloud({ classTitle: newTitle });
-                alert("班級標題已成功更新至雲端！");
             }
         }
 
@@ -411,31 +565,9 @@
             db.entries[curDate].left = document.getElementById('leftText').value; db.entries[curDate].right = document.getElementById('rightText').value;
             renderLivePreview();
         }
-        function renderLivePreview() {
-            if(!isTeacher) return;
-            const curDate = document.getElementById('daySelect').value; const entry = db.entries[curDate] || { left: '', right: '' };
-            document.getElementById('liveLeftContainer').innerHTML = `<div class="card"><div class="card-header">☀️ 今日任務 (${curDate})</div><div>${formatText(entry.left)}</div></div>`;
-            document.getElementById('liveRightContainer').innerHTML = `<div class="card"><div class="card-header">📝 聯絡簿作業 (${curDate})</div><div>${formatText(entry.right)}</div></div>`;
-        }
-        function renderPublicBoard() {
-            const leftBox = document.getElementById('publicLeftContainer'); const leftDate = db.activeLeftDate; const leftEntry = db.entries[leftDate] || { left: '' };
-            leftBox.innerHTML = `<div class="card"><div class="card-header">☀️ 今日任務 (${leftDate || '未發布'})</div><div>${formatText(leftEntry.left)}</div></div>`;
-            const rightBox = document.getElementById('publicRightContainer'); rightBox.innerHTML = '';
-            (db.activeRightDates || []).forEach(d => {
-                const rightEntry = db.entries[d] || { right: '' }; const card = document.createElement('div'); card.className = 'card';
-                card.innerHTML = `<div class="card-header">📝 聯絡簿作業 (${d})</div><div>${formatText(rightEntry.right)}</div>`; rightBox.appendChild(card);
-            });
-        }
 
         async function sendToCloud(payload) { 
-            try { 
-                await fetch(GAS_API_URL, { 
-                    method: 'POST', 
-                    mode: 'no-cors', 
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
-                    body: JSON.stringify(payload) 
-                }); 
-            } catch(e) {} 
+            try { await fetch(GAS_API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) }); } catch(e) {} 
         }
         
         async function saveSingleSide(side) {
@@ -476,8 +608,13 @@
 
         function initMonthSelect() {
             const monthSelect = document.getElementById('monthSelect'); monthSelect.innerHTML = '';
-            const months = [{ text: "115 年 08 月", val: "115-08" }, { text: "115 年 09 月", val: "115-09" }, { text: "115 年 10 月", val: "115-10" }];
-            months.forEach(m => monthSelect.innerHTML += `<option value="${m.val}">${m.text}</option>`); updateDaySelect();
+            let year = 115; let month = 8;
+            for(let i=0; i<12; i++) {
+                let m = month < 10 ? '0'+month : month;
+                monthSelect.innerHTML += `<option value="${year}-${m}">${year} 年 ${m} 月</option>`;
+                month++; if(month > 12) { month = 1; year++; }
+            }
+            updateDaySelect();
         }
         function updateDaySelect() {
             const yearMonth = document.getElementById('monthSelect').value; const daySelect = document.getElementById('daySelect'); daySelect.innerHTML = '';
@@ -493,10 +630,22 @@
             const rightGroup = document.getElementById('rightDateCheckboxGroup'); rightGroup.innerHTML = '';
             allDates.forEach(d => { rightGroup.innerHTML += `<label><input type="checkbox" value="${d}" ${(db.activeRightDates || []).includes(d) ? 'checked' : ''} onchange="toggleRightDate('${d}', this.checked)"> ${d}</label>`; });
         }
-        function formatText(str) { return (!str) ? '<em>(無內容)</em>' : str.replace(/\n/g, '<br>').replace(/<yellow>/g, '<yellow>').replace(/<\/yellow>/g, '</yellow>').replace(/<blue>/g, '<blue>').replace(/<\/blue>/g, '</blue>').replace(/<pink>/g, '<pink>').replace(/<\/pink>/g, '</pink>'); }
+
+        function formatText(str) { 
+            if (!str) return '<em>(無內容)</em>'; 
+            return str.replace(/\n/g, '<br>')
+                      .replace(/<yellow>/g, '<yellow>').replace(/<\/yellow>/g, '</yellow>')
+                      .replace(/<blue>/g, '<blue>').replace(/<\/blue>/g, '</blue>')
+                      .replace(/<pink>/g, '<pink>').replace(/<\/pink>/g, '</pink>')
+                      .replace(/<green>/g, '<green>').replace(/<\/green>/g, '</green>')
+                      .replace(/<orange>/g, '<orange>').replace(/<\/orange>/g, '</orange>')
+                      .replace(/<purple>/g, '<purple>').replace(/<\/purple>/g, '</purple>'); 
+        }
+
         function addTag(id, tag) {
             const area = document.getElementById(id); const start = area.selectionStart; const end = area.selectionEnd;
-            area.value = area.value.substring(0, start) + `<${tag}>${area.value.substring(start, end)}</${tag}>` + area.value.substring(end); onLiveEdit();
+            area.value = area.value.substring(0, start) + `<${tag}>` + area.value.substring(start, end) + `</${tag}>` + area.value.substring(end); 
+            onLiveEdit();
         }
     </script>
 </body>
