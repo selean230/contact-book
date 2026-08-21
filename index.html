@@ -391,26 +391,43 @@
             });
         }
 
+        // 解決 CORS 跨域寫入阻擋的核心修復函數
+        async function sendToCloud(payload) {
+            try {
+                await fetch(GAS_API_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify(payload)
+                });
+            } catch(e) {
+                console.log("送出至雲端失敗:", e);
+            }
+        }
+
         async function saveSingleSide(side) {
             const curDate = document.getElementById('daySelect').value;
             if(!db.entries[curDate]) db.entries[curDate] = { left: '', right: '' };
             
+            db.entries[curDate].left = document.getElementById('leftText').value;
+            db.entries[curDate].right = document.getElementById('rightText').value;
+
             const payload = {
                 entry: {
                     date: curDate,
-                    left: document.getElementById('leftText').value,
-                    right: document.getElementById('rightText').value
+                    left: db.entries[curDate].left,
+                    right: db.entries[curDate].right
                 }
             };
 
-            await fetch(GAS_API_URL, { method: 'POST', body: JSON.stringify(payload) });
+            await sendToCloud(payload);
             alert(`已成功儲存 ${curDate} 【${side === 'left' ? '左欄' : '右欄'}】內容至雲端！`);
             renderTeacherPublishBoxes();
             renderPublicBoard();
         }
 
         async function syncSettingsToCloud(settingsPayload) {
-            await fetch(GAS_API_URL, { method: 'POST', body: JSON.stringify({ settings: settingsPayload }) });
+            await sendToCloud({ settings: settingsPayload });
         }
 
         function setLeftDate(d) {
