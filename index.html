@@ -26,7 +26,11 @@
             font-size: 22px; font-weight: bold; color: #333;
             outline: none; padding: 2px 6px; border-radius: 4px;
         }
-        body.teacher-mode .class-title { border: 1px dashed #2196F3; background: #e3f2fd; }
+        body.teacher-mode .class-title { 
+            border: 1px dashed #2196F3; 
+            background: #e3f2fd; 
+            cursor: pointer;
+        }
         .auth-btn {
             background: #ffffff; border: 1px solid #ccc; padding: 6px 14px;
             border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: bold; color: #555;
@@ -118,7 +122,7 @@
 <body>
 
     <div class="top-bar">
-        <div id="classTitle" class="class-title" contenteditable="false" onblur="saveClassTitle()">612電子聯絡簿</div>
+        <div id="classTitle" class="class-title" contenteditable="false" onclick="enableTitleEdit()" onblur="saveClassTitle()" title="登入後點擊可修改標題">612電子聯絡簿</div>
         <button id="authBtn" class="auth-btn" onclick="handleAuth()"><i class="fa-solid fa-lock"></i> 老師登入</button>
     </div>
 
@@ -146,7 +150,7 @@
             </div>
 
             <div class="panel-group" style="margin-bottom:12px;">
-                <label>⚡ 常用詞彙（點擊插入，點擊「x」可直接刪除常用詞）：</label>
+                <label>⚡ 常用詞彙（點擊插入，點擊「✕」可直接刪除常用詞）：</label>
                 <div id="phraseList" class="phrase-container"></div>
                 <div style="display:flex; gap:6px; margin-top:6px;">
                     <input type="text" id="newPhraseInput" placeholder="新增自訂常用詞" style="width: 200px;">
@@ -274,7 +278,25 @@
                 renderPublicBoard();
                 renderLivePreview();
             } catch(e) {
-                console.log("網路異常或試算表讀取中");
+                console.log("雲端連線讀取中...");
+            }
+        }
+
+        function enableTitleEdit() {
+            if (isTeacher) {
+                const titleEl = document.getElementById('classTitle');
+                titleEl.contentEditable = "true";
+                titleEl.focus();
+            }
+        }
+
+        async function saveClassTitle() {
+            const newTitle = document.getElementById('classTitle').innerText.trim();
+            if (newTitle && isTeacher) {
+                document.getElementById('classTitle').contentEditable = "false";
+                db.classTitle = newTitle;
+                await syncSettingsToCloud({ classTitle: newTitle });
+                alert("班級標題已成功更新至雲端！");
             }
         }
 
@@ -415,6 +437,7 @@
                 document.getElementById('authBtn').innerHTML = `<i class="fa-solid fa-lock"></i> 老師登入`;
                 document.getElementById('authBtn').classList.remove('is-teacher');
                 document.getElementById('previewSection').style.display = 'none';
+                document.getElementById('classTitle').contentEditable = "false";
             }
         }
 
@@ -501,11 +524,6 @@
                 const isChecked = (db.activeRightDates || []).includes(d);
                 rightGroup.innerHTML += `<label><input type="checkbox" value="${d}" ${isChecked ? 'checked' : ''} onchange="toggleRightDate('${d}', this.checked)"> ${d}</label>`;
             });
-        }
-
-        function saveClassTitle() {
-            db.classTitle = document.getElementById('classTitle').innerText;
-            syncSettingsToCloud({ classTitle: db.classTitle });
         }
 
         function formatText(str) {
