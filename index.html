@@ -135,7 +135,6 @@
             border-radius: 4px; cursor: pointer; font-weight: bold; color: #333; font-size: 13px;
         }
 
-        /* 歷史翻頁按鈕列樣式 */
         .history-nav-bar {
             display: flex; align-items: center; justify-content: space-between;
             margin-bottom: 8px; font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
@@ -332,7 +331,7 @@
         </div>
     </div>
 
-    <!-- 公開發布黑板（含歷史翻頁控制項） -->
+    <!-- 公開發布黑板 -->
     <div style="width:100%; max-width:1050px;">
         <div class="history-nav-bar">
             <div style="font-weight:bold; color:#2e7d32;"><i class="fa-solid fa-users"></i> 📢 家長與學生開啟網址看到的【最終發布黑板】：</div>
@@ -384,8 +383,7 @@
             leftFontSize: 26, rightFontSize: 26 
         };
 
-        // 歷史紀錄切換關鍵變數
-        let historyOffset = 0; // 0 代表最新發布日，-1 代表前一天，以此類推
+        let historyOffset = 0;
 
         window.onload = function() {
             initMonthSelect();
@@ -421,12 +419,10 @@
             } catch(e) { console.log("雲端連線讀取中..."); }
         }
 
-        // --- 歷史翻頁切換機制 ---
+        // 讀取試算表中所有儲存過的有效日期（按日期排序）
         function getSortedValidDates() {
-            const todayStr = getTodayDateString();
-            // 過濾出不大於今天的有內容日期，順序從小到大排列
             return Object.keys(db.entries)
-                .filter(d => d <= todayStr)
+                .filter(d => db.entries[d].left || db.entries[d].right)
                 .sort();
         }
 
@@ -434,7 +430,7 @@
             const validDates = getSortedValidDates();
             if (validDates.length === 0) return;
 
-            const maxIndex = validDates.length - 1; // 最新日期的索引位
+            const maxIndex = validDates.length - 1;
             let currentIndex = maxIndex + historyOffset;
             let newIndex = currentIndex + direction;
 
@@ -455,10 +451,7 @@
             const nextBtn = document.getElementById('nextDayBtn');
             const prevBtn = document.getElementById('prevDayBtn');
 
-            // 如果已經在最新一天，停用「下一天」按鈕
             nextBtn.disabled = (currentIndex >= maxIndex);
-            
-            // 如果已經在最舊一天，停用「前一天」按鈕
             prevBtn.disabled = (currentIndex <= 0);
         }
 
@@ -515,7 +508,7 @@
 
         async function switchPublishMode(mode) {
             setModeUI(mode);
-            historyOffset = 0; // 重置歷史偏移
+            historyOffset = 0;
             renderPublicBoard();
             await syncSettingsToCloud({ publishMode: mode });
         }
@@ -543,22 +536,16 @@
             let targetRightDates = [];
 
             if (historyOffset !== 0 && validDates.length > 0) {
-                // 如果家長正點擊左右箭頭查看歷史紀錄，強制呈現該歷史日期的內容
                 const histDate = validDates[currentIndex];
                 targetLeftDate = histDate;
                 targetRightDates = [histDate];
             } else {
-                // 回到最新的發布畫面（依據老師設定的選項一或選項二）
                 if (db.publishMode === 'auto') {
                     targetLeftDate = todayStr;
                     targetRightDates = [todayStr];
                 } else {
                     targetLeftDate = db.activeLeftDate || todayStr;
                     targetRightDates = (db.activeRightDates && db.activeRightDates.length > 0) ? db.activeRightDates : [todayStr];
-
-                    if (targetLeftDate < todayStr) targetLeftDate = todayStr;
-                    targetRightDates = targetRightDates.filter(d => d >= todayStr);
-                    if (targetRightDates.length === 0) targetRightDates = [todayStr];
                 }
             }
 
@@ -650,7 +637,7 @@
             await sendToCloud({ entry: { date: curDate, left: db.entries[curDate].left, right: db.entries[curDate].right }, settings: { activeLeftDate: db.activeLeftDate } });
             alert(`已成功儲存 ${curDate} 內容至雲端！`); renderTeacherPublishBoxes(); renderPublicBoard();
         }
-        async function syncSettingsToCloud(settingsPayload) { await sendToCloud({ settings: settingsPayload }); }
+        async function syncSettingsToCloud(settingsPayload) { await syncSettingsToCloud(settingsPayload); }
         async function setLeftDate(d) { db.activeLeftDate = d; renderPublicBoard(); await syncSettingsToCloud({ activeLeftDate: d }); }
         async function toggleRightDate(d, checked) {
             if(!db.activeRightDates) db.activeRightDates = [];
