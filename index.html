@@ -135,6 +135,21 @@
             border-radius: 4px; cursor: pointer; font-weight: bold; color: #333; font-size: 13px;
         }
 
+        /* 歷史翻頁按鈕列樣式 */
+        .history-nav-bar {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 8px; font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+        }
+        .nav-btn {
+            background: #0284c7; color: white; border: none; padding: 6px 14px;
+            border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: bold;
+            display: flex; align-items: center; gap: 6px; transition: background 0.2s;
+        }
+        .nav-btn:hover:not(:disabled) { background: #0369a1; }
+        .nav-btn:disabled {
+            background: #cbd5e1; color: #94a3b8; cursor: not-allowed;
+        }
+
         .edit-section { background: #e3f2fd; padding: 15px; border-radius: 8px; border: 1px solid #bbdefb; margin-bottom: 20px; }
         .publish-section { background: #f1f8e9; padding: 15px; border-radius: 8px; border: 1px solid #c8e6c9; margin-bottom: 15px; }
         .section-title { font-size: 17px; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
@@ -202,7 +217,6 @@
             </div>
 
             <div class="panel-row">
-                <!-- 左欄：單字獨立放大選單 + 調色盤 -->
                 <div class="panel-group">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
                         <label style="margin:0;">左欄內容 (當日任務)：</label>
@@ -224,7 +238,6 @@
                                 <span class="color-dot" style="background:#e1bee7;" onclick="addTag('leftText','purple')" title="紫色"></span>
                             </span>
                         </div>
-                        <!-- 單字獨立縮放選單 -->
                         <div style="display:flex; align-items:center; gap:4px;">
                             <span style="font-size:13px; color:#555; font-weight:bold;">🔤 選字放大：</span>
                             <select onchange="applyInlineFontSize('leftText', this.value); this.value='';" style="width:auto; padding:2px 4px; font-size:12px;">
@@ -240,7 +253,6 @@
                     <button class="btn-save" style="margin-top:5px; width:100%;" onclick="saveSingleSide('left')">💾 儲存該日左欄至雲端</button>
                 </div>
 
-                <!-- 右欄：單字獨立放大選單 + 調色盤 -->
                 <div class="panel-group">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
                         <label style="margin:0;">右欄內容 (聯絡簿作業)：</label>
@@ -262,7 +274,6 @@
                                 <span class="color-dot" style="background:#e1bee7;" onclick="addTag('rightText','purple')" title="紫色"></span>
                             </span>
                         </div>
-                        <!-- 單字獨立縮放選單 -->
                         <div style="display:flex; align-items:center; gap:4px;">
                             <span style="font-size:13px; color:#555; font-weight:bold;">🔤 選字放大：</span>
                             <select onchange="applyInlineFontSize('rightText', this.value); this.value='';" style="width:auto; padding:2px 4px; font-size:12px;">
@@ -321,8 +332,16 @@
         </div>
     </div>
 
+    <!-- 公開發布黑板（含歷史翻頁控制項） -->
     <div style="width:100%; max-width:1050px;">
-        <div style="font-weight:bold; color:#2e7d32; margin-bottom:6px;"><i class="fa-solid fa-users"></i> 📢 家長與學生開啟網址看到的【最終發布黑板】：</div>
+        <div class="history-nav-bar">
+            <div style="font-weight:bold; color:#2e7d32;"><i class="fa-solid fa-users"></i> 📢 家長與學生開啟網址看到的【最終發布黑板】：</div>
+            <div style="display:flex; gap:6px;">
+                <button id="prevDayBtn" class="nav-btn" onclick="navigateHistory(-1)"><i class="fa-solid fa-chevron-left"></i> 前一天</button>
+                <button id="nextDayBtn" class="nav-btn" onclick="navigateHistory(1)" disabled>下一天 <i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+        </div>
+
         <div id="publicBlackboard" class="blackboard">
             <button class="exit-fullscreen-btn" onclick="exitBlackboardFullscreen()"><i class="fa-solid fa-compress"></i> 退出全螢幕 (Esc)</button>
             <div class="board-inner">
@@ -365,6 +384,9 @@
             leftFontSize: 26, rightFontSize: 26 
         };
 
+        // 歷史紀錄切換關鍵變數
+        let historyOffset = 0; // 0 代表最新發布日，-1 代表前一天，以此類推
+
         window.onload = function() {
             initMonthSelect();
             fetchCloudData();
@@ -399,7 +421,47 @@
             } catch(e) { console.log("雲端連線讀取中..."); }
         }
 
-        // --- 單字獨立縮放核心函數 ---
+        // --- 歷史翻頁切換機制 ---
+        function getSortedValidDates() {
+            const todayStr = getTodayDateString();
+            // 過濾出不大於今天的有內容日期，順序從小到大排列
+            return Object.keys(db.entries)
+                .filter(d => d <= todayStr)
+                .sort();
+        }
+
+        function navigateHistory(direction) {
+            const validDates = getSortedValidDates();
+            if (validDates.length === 0) return;
+
+            const maxIndex = validDates.length - 1; // 最新日期的索引位
+            let currentIndex = maxIndex + historyOffset;
+            let newIndex = currentIndex + direction;
+
+            if (newIndex > maxIndex) {
+                alert("已是最新發布日期！");
+                return;
+            }
+            if (newIndex < 0) {
+                alert("已經是第一筆歷史紀錄了！");
+                return;
+            }
+
+            historyOffset += direction;
+            renderPublicBoard();
+        }
+
+        function updateNavButtons(currentIndex, maxIndex) {
+            const nextBtn = document.getElementById('nextDayBtn');
+            const prevBtn = document.getElementById('prevDayBtn');
+
+            // 如果已經在最新一天，停用「下一天」按鈕
+            nextBtn.disabled = (currentIndex >= maxIndex);
+            
+            // 如果已經在最舊一天，停用「前一天」按鈕
+            prevBtn.disabled = (currentIndex <= 0);
+        }
+
         function applyInlineFontSize(textAreaId, scale) {
             if (!scale) return;
             const area = document.getElementById(textAreaId);
@@ -412,13 +474,7 @@
                 return;
             }
 
-            let wrappedText = "";
-            if (scale === "1.0") {
-                wrappedText = selectedText;
-            } else {
-                wrappedText = `<span style="font-size:${scale}em;">${selectedText}</span>`;
-            }
-
+            let wrappedText = scale === "1.0" ? selectedText : `<span style="font-size:${scale}em;">${selectedText}</span>`;
             area.value = area.value.substring(0, start) + wrappedText + area.value.substring(end);
             onLiveEdit();
         }
@@ -459,6 +515,7 @@
 
         async function switchPublishMode(mode) {
             setModeUI(mode);
+            historyOffset = 0; // 重置歷史偏移
             renderPublicBoard();
             await syncSettingsToCloud({ publishMode: mode });
         }
@@ -473,19 +530,36 @@
 
         function renderPublicBoard() {
             const todayStr = getTodayDateString();
+            const validDates = getSortedValidDates();
+            const maxIndex = validDates.length - 1;
+            
+            let currentIndex = maxIndex + historyOffset;
+            if (currentIndex < 0) currentIndex = 0;
+            if (currentIndex > maxIndex) currentIndex = maxIndex;
+
+            updateNavButtons(currentIndex, maxIndex);
+
             let targetLeftDate = "";
             let targetRightDates = [];
 
-            if (db.publishMode === 'auto') {
-                targetLeftDate = todayStr;
-                targetRightDates = [todayStr];
+            if (historyOffset !== 0 && validDates.length > 0) {
+                // 如果家長正點擊左右箭頭查看歷史紀錄，強制呈現該歷史日期的內容
+                const histDate = validDates[currentIndex];
+                targetLeftDate = histDate;
+                targetRightDates = [histDate];
             } else {
-                targetLeftDate = db.activeLeftDate || todayStr;
-                targetRightDates = (db.activeRightDates && db.activeRightDates.length > 0) ? db.activeRightDates : [todayStr];
+                // 回到最新的發布畫面（依據老師設定的選項一或選項二）
+                if (db.publishMode === 'auto') {
+                    targetLeftDate = todayStr;
+                    targetRightDates = [todayStr];
+                } else {
+                    targetLeftDate = db.activeLeftDate || todayStr;
+                    targetRightDates = (db.activeRightDates && db.activeRightDates.length > 0) ? db.activeRightDates : [todayStr];
 
-                if (targetLeftDate < todayStr) targetLeftDate = todayStr;
-                targetRightDates = targetRightDates.filter(d => d >= todayStr);
-                if (targetRightDates.length === 0) targetRightDates = [todayStr];
+                    if (targetLeftDate < todayStr) targetLeftDate = todayStr;
+                    targetRightDates = targetRightDates.filter(d => d >= todayStr);
+                    if (targetRightDates.length === 0) targetRightDates = [todayStr];
+                }
             }
 
             const leftBox = document.getElementById('publicLeftContainer');
@@ -528,8 +602,7 @@
             document.getElementById('liveRightContainer').innerHTML = `
                 <div class="card" style="font-size:${rSize}px;">
                     <div class="card-header" style="font-size:${rSize+2}px;">📝 聯絡簿作業 (${curDate})</div>
-                    <div>${formatText(entry.right)}</div>
-                </div>`;
+                    <div>${formatText(entry.right)}</div>`;
         }
 
         function enableTitleEdit() { if (isTeacher) { const titleEl = document.getElementById('classTitle'); titleEl.contentEditable = "true"; titleEl.focus(); } }
