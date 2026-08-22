@@ -383,7 +383,7 @@
             leftFontSize: 26, rightFontSize: 26 
         };
 
-        let currentViewDateIndex = -1; // 記錄當前翻頁索引位
+        let currentViewDateIndex = -1;
 
         window.onload = function() {
             initMonthSelect();
@@ -417,23 +417,26 @@
                 
                 renderPhrases(); renderTeacherPublishBoxes(); 
                 
-                // 雲端載入完成後重置翻頁索引
                 currentViewDateIndex = -1;
                 renderPublicBoard(); 
                 renderLivePreview();
             } catch(e) { console.log("雲端連線讀取中..."); }
         }
 
-        // 讀取所有有效資料日期的排序清單
+        // 【安全核心】嚴格過濾：只允許不大於今天的有內容日期列入歷史紀錄！
         function getSortedValidDates() {
             const todayStr = getTodayDateString();
-            const dates = Object.keys(db.entries)
-                .filter(d => (db.entries[d].left || db.entries[d].right))
+            
+            // 抓取所有有內容且不大於今天的日期
+            const validDates = Object.keys(db.entries)
+                .filter(d => d <= todayStr && (db.entries[d].left || db.entries[d].right))
                 .sort();
             
-            // 確保「預設發布日」也納入歷史清單中
-            if (!dates.includes(todayStr)) dates.push(todayStr);
-            return dates.sort();
+            // 確保今天的日期存在於清單中作為天花板
+            if (!validDates.includes(todayStr)) validDates.push(todayStr);
+            
+            // 嚴格截斷：絕對不包含任何大於今天的未發布日期！
+            return validDates.filter(d => d <= todayStr).sort();
         }
 
         function navigateHistory(direction) {
@@ -533,14 +536,13 @@
             const todayStr = getTodayDateString();
             const validDates = getSortedValidDates();
             
-            // 初次載入時，尋找最接近且不大於今天的日期作為預設開頁
             if (currentViewDateIndex === -1) {
                 let defaultDate = (db.publishMode === 'auto') ? todayStr : (db.activeLeftDate || todayStr);
+                if (defaultDate > todayStr) defaultDate = todayStr; // 強制防止超前
+                
                 let foundIdx = validDates.indexOf(defaultDate);
                 if (foundIdx === -1) {
-                    // 找不到就定位在不大於預設日期的最後一個有效日
-                    foundIdx = validDates.filter(d => d <= defaultDate).length - 1;
-                    if (foundIdx < 0) foundIdx = 0;
+                    foundIdx = validDates.length - 1;
                 }
                 currentViewDateIndex = foundIdx;
             }
@@ -555,10 +557,14 @@
             let targetLeftDate = activeViewDate;
             let targetRightDates = [activeViewDate];
 
-            // 如果是在老師手動模式，且剛好停留在最新的發布點，採用老師的多選設定
             if (currentViewDateIndex === maxIndex && db.publishMode === 'manual') {
                 targetLeftDate = db.activeLeftDate || activeViewDate;
                 targetRightDates = (db.activeRightDates && db.activeRightDates.length > 0) ? db.activeRightDates : [activeViewDate];
+                
+                // 再次安全防禦：手動模式也不允許呈現未來日期
+                if (targetLeftDate > todayStr) targetLeftDate = todayStr;
+                targetRightDates = targetRightDates.filter(d => d <= todayStr);
+                if (targetRightDates.length === 0) targetRightDates = [todayStr];
             }
 
             const leftBox = document.getElementById('publicLeftContainer');
