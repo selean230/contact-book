@@ -383,7 +383,7 @@
             leftFontSize: 26, rightFontSize: 26 
         };
 
-        let historyOffset = 0;
+        let currentViewDateIndex = -1; // 記錄當前翻頁索引位
 
         window.onload = function() {
             initMonthSelect();
@@ -415,26 +415,34 @@
                 applySideFontSizes(db.leftFontSize || 26, db.rightFontSize || 26);
                 setModeUI(db.publishMode || 'auto');
                 
-                renderPhrases(); renderTeacherPublishBoxes(); renderPublicBoard(); renderLivePreview();
+                renderPhrases(); renderTeacherPublishBoxes(); 
+                
+                // 雲端載入完成後重置翻頁索引
+                currentViewDateIndex = -1;
+                renderPublicBoard(); 
+                renderLivePreview();
             } catch(e) { console.log("雲端連線讀取中..."); }
         }
 
-        // 讀取試算表中所有儲存過的有效日期（按日期排序）
+        // 讀取所有有效資料日期的排序清單
         function getSortedValidDates() {
-            return Object.keys(db.entries)
-                .filter(d => db.entries[d].left || db.entries[d].right)
+            const todayStr = getTodayDateString();
+            const dates = Object.keys(db.entries)
+                .filter(d => (db.entries[d].left || db.entries[d].right))
                 .sort();
+            
+            // 確保「預設發布日」也納入歷史清單中
+            if (!dates.includes(todayStr)) dates.push(todayStr);
+            return dates.sort();
         }
 
         function navigateHistory(direction) {
             const validDates = getSortedValidDates();
             if (validDates.length === 0) return;
 
-            const maxIndex = validDates.length - 1;
-            let currentIndex = maxIndex + historyOffset;
-            let newIndex = currentIndex + direction;
+            let newIndex = currentViewDateIndex + direction;
 
-            if (newIndex > maxIndex) {
+            if (newIndex >= validDates.length) {
                 alert("已是最新發布日期！");
                 return;
             }
@@ -443,7 +451,7 @@
                 return;
             }
 
-            historyOffset += direction;
+            currentViewDateIndex = newIndex;
             renderPublicBoard();
         }
 
@@ -508,7 +516,7 @@
 
         async function switchPublishMode(mode) {
             setModeUI(mode);
-            historyOffset = 0;
+            currentViewDateIndex = -1;
             renderPublicBoard();
             await syncSettingsToCloud({ publishMode: mode });
         }
@@ -524,29 +532,33 @@
         function renderPublicBoard() {
             const todayStr = getTodayDateString();
             const validDates = getSortedValidDates();
-            const maxIndex = validDates.length - 1;
             
-            let currentIndex = maxIndex + historyOffset;
-            if (currentIndex < 0) currentIndex = 0;
-            if (currentIndex > maxIndex) currentIndex = maxIndex;
-
-            updateNavButtons(currentIndex, maxIndex);
-
-            let targetLeftDate = "";
-            let targetRightDates = [];
-
-            if (historyOffset !== 0 && validDates.length > 0) {
-                const histDate = validDates[currentIndex];
-                targetLeftDate = histDate;
-                targetRightDates = [histDate];
-            } else {
-                if (db.publishMode === 'auto') {
-                    targetLeftDate = todayStr;
-                    targetRightDates = [todayStr];
-                } else {
-                    targetLeftDate = db.activeLeftDate || todayStr;
-                    targetRightDates = (db.activeRightDates && db.activeRightDates.length > 0) ? db.activeRightDates : [todayStr];
+            // 初次載入時，尋找最接近且不大於今天的日期作為預設開頁
+            if (currentViewDateIndex === -1) {
+                let defaultDate = (db.publishMode === 'auto') ? todayStr : (db.activeLeftDate || todayStr);
+                let foundIdx = validDates.indexOf(defaultDate);
+                if (foundIdx === -1) {
+                    // 找不到就定位在不大於預設日期的最後一個有效日
+                    foundIdx = validDates.filter(d => d <= defaultDate).length - 1;
+                    if (foundIdx < 0) foundIdx = 0;
                 }
+                currentViewDateIndex = foundIdx;
+            }
+
+            const maxIndex = validDates.length - 1;
+            if (currentViewDateIndex > maxIndex) currentViewDateIndex = maxIndex;
+            if (currentViewDateIndex < 0) currentViewDateIndex = 0;
+
+            updateNavButtons(currentViewDateIndex, maxIndex);
+
+            const activeViewDate = validDates[currentViewDateIndex] || todayStr;
+            let targetLeftDate = activeViewDate;
+            let targetRightDates = [activeViewDate];
+
+            // 如果是在老師手動模式，且剛好停留在最新的發布點，採用老師的多選設定
+            if (currentViewDateIndex === maxIndex && db.publishMode === 'manual') {
+                targetLeftDate = db.activeLeftDate || activeViewDate;
+                targetRightDates = (db.activeRightDates && db.activeRightDates.length > 0) ? db.activeRightDates : [activeViewDate];
             }
 
             const leftBox = document.getElementById('publicLeftContainer');
@@ -637,7 +649,7 @@
             await sendToCloud({ entry: { date: curDate, left: db.entries[curDate].left, right: db.entries[curDate].right }, settings: { activeLeftDate: db.activeLeftDate } });
             alert(`已成功儲存 ${curDate} 內容至雲端！`); renderTeacherPublishBoxes(); renderPublicBoard();
         }
-        async function syncSettingsToCloud(settingsPayload) { await syncSettingsToCloud(settingsPayload); }
+        async function syncSettingsToCloud(settingsPayload) { await sendToCloud({ settings: settingsPayload }); }
         async function setLeftDate(d) { db.activeLeftDate = d; renderPublicBoard(); await syncSettingsToCloud({ activeLeftDate: d }); }
         async function toggleRightDate(d, checked) {
             if(!db.activeRightDates) db.activeRightDates = [];
